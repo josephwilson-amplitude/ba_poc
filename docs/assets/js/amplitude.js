@@ -1,17 +1,14 @@
 (function () {
-  // Add plugins before init
+  // Add Session Replay plugin before init
   if (window.sessionReplay) {
     window.amplitude.add(window.sessionReplay.plugin({ sampleRate: 1 }));
   }
-  if (window.engagement) {
-    window.amplitude.add(window.engagement.plugin());
-  }
 
-  // Init — EU data centre required
+  // Init — EU data centre (serverZone routes all endpoints to EU)
   window.amplitude.init("f70ef2dbfa2b6bfc6316397d090f6b16", {
     fetchRemoteConfig: true,
     autocapture: true,
-    serverUrl: "https://api.eu.amplitude.com/2/httpapi"
+    serverZone: 'EU'
   });
 
   // ── Identity helpers ──────────────────────────────────────────────
