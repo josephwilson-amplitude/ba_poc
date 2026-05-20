@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>British Airways — Seat Selection</title>
   <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.js"></script>
   <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.engagement.js"></script>
   <script src="assets/js/amplitude.js"></script>
@@ -50,7 +51,7 @@
 
         <!-- ⚡ FRICTION: fee notice shown immediately on page load -->
         <div class="fee-notice" id="feeNotice">
-          <span class="fee-notice__icon">💺</span>
+          <span class="fee-notice__icon"><i class="fa-solid fa-chair"></i></span>
           <div class="fee-notice__text">
             <strong>Seat selection from £15.00 per person</strong>
             <span>Seat fees are added to your total. You can skip and be automatically assigned a seat at check-in.</span>
@@ -65,7 +66,7 @@
           </div>
 
           <!-- Aircraft nose indicator -->
-          <div style="text-align:center; font-size:0.75rem; color:var(--ba-grey); margin-bottom:0.5rem; letter-spacing:0.08em; text-transform:uppercase;">✈ Front of aircraft</div>
+          <div style="text-align:center; font-size:0.75rem; color:var(--ba-grey); margin-bottom:0.5rem; letter-spacing:0.08em; text-transform:uppercase;"><i class="fa-solid fa-plane fa-rotate-270"></i> Front of aircraft</div>
 
           <!-- Column labels -->
           <div style="display:flex; justify-content:center; gap:0.4rem; margin-bottom:0.3rem; padding-left:1.9rem;">
@@ -186,7 +187,7 @@
 
       if (isExec) {
         document.getElementById('feeNotice').innerHTML =
-          '<span class="fee-notice__icon">✨</span>' +
+          '<span class="fee-notice__icon"><i class="fa-solid fa-star" style="color:var(--ba-gold);"></i></span>' +
           '<div class="fee-notice__text">' +
           '<strong style="color:var(--ba-success);">Complimentary seat selection — Executive Club benefit</strong>' +
           '<span>As an Executive Club member, seat selection is included at no extra charge.</span>' +

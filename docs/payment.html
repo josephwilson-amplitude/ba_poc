@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>British Airways — Payment</title>
   <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.js"></script>
   <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.engagement.js"></script>
   <script src="assets/js/amplitude.js"></script>
@@ -50,7 +51,7 @@
 
         <!-- Security badge -->
         <div style="display:flex; align-items:center; gap:0.75rem; background:#F0FDF4; border:1.5px solid #A7F3D0; border-radius:var(--radius); padding:0.9rem 1.25rem; margin-bottom:1.5rem;">
-          <span style="font-size:1.25rem;">🔒</span>
+          <span style="font-size:1.25rem; color:var(--ba-success);"><i class="fa-solid fa-lock"></i></span>
           <span style="font-size:0.875rem; color:var(--ba-success); font-weight:600;">Your connection is secure — powered by British Airways Secure Pay</span>
         </div>
 
@@ -152,7 +153,7 @@
           </div>
 
           <button type="submit" class="btn btn-primary btn-lg btn-full" id="payNowBtn">
-            🔒 Pay now — <span id="payAmount">£374</span>
+            <i class="fa-solid fa-lock"></i> Pay now — <span id="payAmount">£374</span>
           </button>
           <p style="font-size:0.75rem; color:var(--ba-grey); text-align:center; margin-top:0.75rem;">
             By clicking Pay now you authorise British Airways to charge your card. This is a demo — no real payment will be taken.
@@ -205,17 +206,17 @@
         <div class="card" style="margin-top:1rem;">
           <div class="card-body" style="font-size:0.8rem; color:var(--ba-grey-dark);">
             <p style="margin-bottom:0.75rem; font-weight:700; color:var(--ba-navy);">What's included</p>
-            <p style="margin-bottom:0.4rem;">✈️ Return flight LHR ↔ JFK</p>
-            <p style="margin-bottom:0.4rem;">🧳 1 x 23kg checked bag</p>
-            <p style="margin-bottom:0.4rem;">👜 1 x cabin bag</p>
-            <p style="margin-bottom:0.4rem;">🍽️ Complimentary meal service</p>
-            <p>📺 In-flight entertainment</p>
+            <p style="margin-bottom:0.4rem;"><i class="fa-solid fa-plane" style="color:var(--ba-blue); width:1.1rem;"></i> Return flight LHR ↔ JFK</p>
+            <p style="margin-bottom:0.4rem;"><i class="fa-solid fa-suitcase" style="color:var(--ba-blue); width:1.1rem;"></i> 1 x 23kg checked bag</p>
+            <p style="margin-bottom:0.4rem;"><i class="fa-solid fa-bag-shopping" style="color:var(--ba-blue); width:1.1rem;"></i> 1 x cabin bag</p>
+            <p style="margin-bottom:0.4rem;"><i class="fa-solid fa-utensils" style="color:var(--ba-blue); width:1.1rem;"></i> Complimentary meal service</p>
+            <p><i class="fa-solid fa-tv" style="color:var(--ba-blue); width:1.1rem;"></i> In-flight entertainment</p>
           </div>
         </div>
 
         <!-- Avios earn -->
         <div style="background:linear-gradient(135deg, var(--ba-navy), var(--ba-dark-blue)); color:white; border-radius:var(--radius); padding:1.25rem; margin-top:1rem; font-size:0.875rem;">
-          <p style="color:var(--ba-gold); font-weight:700; margin-bottom:0.4rem;">✨ You'll earn Avios</p>
+          <p style="color:var(--ba-gold); font-weight:700; margin-bottom:0.4rem;"><i class="fa-solid fa-star"></i> You'll earn Avios</p>
           <p style="color:rgba(255,255,255,0.8);">Up to <strong style="color:white;">3,490 Avios</strong> on this booking with your Executive Club card.</p>
         </div>
       </div>

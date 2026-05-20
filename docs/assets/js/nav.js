@@ -5,7 +5,7 @@
 
   navRoot.innerHTML = [
     '<nav class="ba-nav">',
-    '  <a href="index.html" class="ba-nav__logo">British Airways</a>',
+    '  <a href="index.html" class="ba-nav__logo"><i class="fa-solid fa-plane-departure"></i> British Airways</a>',
     '  <ul class="ba-nav__links">',
     '    <li><a href="index.html">Flights</a></li>',
     '    <li><a href="offers.html">Offers</a></li>',

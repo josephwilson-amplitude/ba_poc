@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>British Airways — Booking Confirmed</title>
   <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.js"></script>
   <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.engagement.js"></script>
   <script src="assets/js/amplitude.js"></script>
@@ -17,7 +18,7 @@
 
     <!-- Confirmation hero -->
     <div class="confirmation-hero">
-      <div class="confirmation-hero__check">✅</div>
+      <div class="confirmation-hero__check"><i class="fa-solid fa-circle-check" style="color:#68D391;"></i></div>
       <div class="confirmation-hero__title">Booking confirmed!</div>
       <p style="color:rgba(255,255,255,0.8); margin-bottom:0.75rem;">Your booking reference is</p>
       <div class="confirmation-hero__ref" id="bookingRef">BA_XXXXXXX</div>
@@ -31,7 +32,7 @@
         <!-- Flight details -->
         <div class="card" style="margin-bottom:1.5rem;">
           <div class="card-header" style="display:flex; align-items:center; gap:0.75rem;">
-            <span style="font-size:1.25rem;">✈️</span>
+            <span style="font-size:1.25rem; color:var(--ba-blue);"><i class="fa-solid fa-plane"></i></span>
             <h3 style="color:var(--ba-navy);">Your itinerary</h3>
           </div>
           <div class="card-body">
@@ -45,7 +46,7 @@
                 <div style="color:var(--ba-grey); font-size:0.75rem; margin-bottom:0.3rem;" id="confDuration">8h 45m</div>
                 <div style="display:flex; align-items:center; gap:0; color:var(--ba-grey);">
                   <div style="height:1px; width:40px; background:var(--ba-grey-light);"></div>
-                  <div style="font-size:1.2rem;">✈</div>
+                  <div style="font-size:1.2rem; color:var(--ba-blue);"><i class="fa-solid fa-plane"></i></div>
                   <div style="height:1px; width:40px; background:var(--ba-grey-light);"></div>
                 </div>
                 <div style="font-size:0.7rem; color:var(--ba-grey); margin-top:0.3rem;">Non-stop</div>
@@ -109,7 +110,7 @@
         <!-- Action buttons -->
         <div style="display:flex; gap:1rem; flex-wrap:wrap;">
           <button class="btn btn-primary btn-lg" id="downloadBoardingPass">
-            📄 Download boarding pass
+            <i class="fa-solid fa-file-arrow-down"></i> Download boarding pass
           </button>
           <a href="index.html" class="btn btn-outline btn-lg">Book another flight</a>
         </div>
@@ -143,7 +144,7 @@
 
         <!-- Avios earned -->
         <div style="background:linear-gradient(135deg,var(--ba-navy),var(--ba-dark-blue)); border-radius:var(--radius); padding:1.25rem; margin-top:1rem; color:white;">
-          <div style="color:var(--ba-gold); font-weight:700; font-size:1rem; margin-bottom:0.35rem;">✨ Avios earned</div>
+          <div style="color:var(--ba-gold); font-weight:700; font-size:1rem; margin-bottom:0.35rem;"><i class="fa-solid fa-star"></i> Avios earned</div>
           <div style="font-size:2rem; font-weight:800;" id="aviosEarned">3,490</div>
           <div style="font-size:0.8rem; color:rgba(255,255,255,0.7); margin-top:0.25rem;">Credited to your Executive Club account within 7 days.</div>
         </div>
@@ -154,15 +155,15 @@
             <h3 style="color:var(--ba-navy); margin-bottom:0.5rem; font-size:0.95rem;">Complete your trip</h3>
             <div style="display:flex; flex-direction:column; gap:0.6rem;">
               <div style="display:flex; align-items:center; justify-content:space-between; font-size:0.875rem; padding:0.5rem 0; border-bottom:1px solid var(--ba-grey-light);">
-                <span>🏨 Hotel in New York</span>
+                <span><i class="fa-solid fa-hotel" style="color:var(--ba-blue); width:1.1rem;"></i> Hotel in New York</span>
                 <a href="#" class="btn btn-outline btn-sm">Search</a>
               </div>
               <div style="display:flex; align-items:center; justify-content:space-between; font-size:0.875rem; padding:0.5rem 0; border-bottom:1px solid var(--ba-grey-light);">
-                <span>🚗 Car hire at JFK</span>
+                <span><i class="fa-solid fa-car" style="color:var(--ba-blue); width:1.1rem;"></i> Car hire at JFK</span>
                 <a href="#" class="btn btn-outline btn-sm">Search</a>
               </div>
               <div style="display:flex; align-items:center; justify-content:space-between; font-size:0.875rem; padding:0.5rem 0;">
-                <span>🛡️ Travel insurance</span>
+                <span><i class="fa-solid fa-shield-halved" style="color:var(--ba-blue); width:1.1rem;"></i> Travel insurance</span>
                 <a href="#" class="btn btn-outline btn-sm">Get quote</a>
               </div>
             </div>
@@ -237,7 +238,7 @@
 
     // Mock boarding pass download
     document.getElementById('downloadBoardingPass').addEventListener('click', function () {
-      this.textContent = '✅ Boarding pass saved';
+      this.innerHTML = '<i class="fa-solid fa-circle-check"></i> Boarding pass saved';
       this.disabled = true;
       this.style.opacity = '0.7';
     });
