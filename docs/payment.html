@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>British Airways — Payment</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.js"></script>
+  <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.engagement.js"></script>
+  <script src="assets/js/amplitude.js"></script>
+</head>
+<body>
+
+  <div id="nav-root"></div>
+
+  <!-- Step progress bar -->
+  <div style="background:white; border-bottom:1px solid var(--ba-grey-light); padding:0 2rem;">
+    <div style="max-width:1100px; margin:0 auto; display:flex; align-items:center; height:52px; gap:0;">
+      <div class="step-item active"><span class="step-num">1</span><span class="step-label">Search</span></div>
+      <div class="step-divider"></div>
+      <div class="step-item active"><span class="step-num">2</span><span class="step-label">Select flight</span></div>
+      <div class="step-divider"></div>
+      <div class="step-item active"><span class="step-num">3</span><span class="step-label">Passenger details</span></div>
+      <div class="step-divider"></div>
+      <div class="step-item active"><span class="step-num">4</span><span class="step-label">Seat selection</span></div>
+      <div class="step-divider"></div>
+      <div class="step-item active current"><span class="step-num">5</span><span class="step-label">Payment</span></div>
+    </div>
+  </div>
+
+  <style>
+    .step-item { display:flex; align-items:center; gap:0.5rem; padding:0 0.75rem; white-space:nowrap; }
+    .step-num  { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; background:var(--ba-grey-light); color:var(--ba-grey); flex-shrink:0; }
+    .step-label { font-size:0.8rem; color:var(--ba-grey); font-weight:500; }
+    .step-item.active .step-num { background:var(--ba-blue); color:white; }
+    .step-item.active .step-label { color:var(--ba-blue); }
+    .step-item.current .step-label { font-weight:700; }
+    .step-divider { flex:1; height:1px; background:var(--ba-grey-light); min-width:24px; }
+  </style>
+
+  <main class="page-wrap">
+    <div class="sidebar-layout">
+
+      <!-- Payment form -->
+      <div>
+        <div class="page-header">
+          <h1>Secure payment</h1>
+          <p>Your payment is protected by 256-bit SSL encryption. No payment details are stored.</p>
+        </div>
+
+        <!-- Security badge -->
+        <div style="display:flex; align-items:center; gap:0.75rem; background:#F0FDF4; border:1.5px solid #A7F3D0; border-radius:var(--radius); padding:0.9rem 1.25rem; margin-bottom:1.5rem;">
+          <span style="font-size:1.25rem;">🔒</span>
+          <span style="font-size:0.875rem; color:var(--ba-success); font-weight:600;">Your connection is secure — powered by British Airways Secure Pay</span>
+        </div>
+
+        <form id="paymentForm" novalidate autocomplete="off">
+          <!-- Card payment -->
+          <div class="card" style="margin-bottom:1.5rem;">
+            <div class="card-header" style="display:flex; align-items:center; justify-content:space-between;">
+              <h3 style="color:var(--ba-navy);">Card details</h3>
+              <div class="card-icons">
+                <span class="card-icon">VISA</span>
+                <span class="card-icon">MC</span>
+                <span class="card-icon">AMEX</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="payment-section">
+                <div class="form-group">
+                  <label class="form-label">Name on card</label>
+                  <input type="text" class="form-control" id="cardName" placeholder="As it appears on the card" autocomplete="off" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Card number</label>
+                  <input type="text" class="form-control" id="cardNumber" placeholder="•••• •••• •••• ••••" maxlength="19" autocomplete="off" />
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem;">
+                  <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Expiry month</label>
+                    <select class="form-control" id="cardExpMonth">
+                      <option value="">MM</option>
+                      <option>01</option><option>02</option><option>03</option>
+                      <option>04</option><option>05</option><option>06</option>
+                      <option>07</option><option>08</option><option>09</option>
+                      <option>10</option><option>11</option><option>12</option>
+                    </select>
+                  </div>
+                  <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Expiry year</label>
+                    <select class="form-control" id="cardExpYear">
+                      <option value="">YYYY</option>
+                      <option>2026</option><option>2027</option><option>2028</option>
+                      <option>2029</option><option>2030</option><option>2031</option>
+                    </select>
+                  </div>
+                  <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">CVV / CVC</label>
+                    <input type="text" class="form-control" id="cardCvv" placeholder="•••" maxlength="4" autocomplete="off" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Billing address -->
+          <div class="card" style="margin-bottom:1.5rem;">
+            <div class="card-header">
+              <h3 style="color:var(--ba-navy);">Billing address</h3>
+            </div>
+            <div class="card-body">
+              <div class="passengers-grid">
+                <div class="form-group full-width">
+                  <label class="form-label">Address line 1</label>
+                  <input type="text" class="form-control" id="billAddr1" placeholder="Street address" />
+                </div>
+                <div class="form-group full-width">
+                  <label class="form-label">Address line 2 <span style="font-weight:400; color:var(--ba-grey);">(optional)</span></label>
+                  <input type="text" class="form-control" id="billAddr2" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">City</label>
+                  <input type="text" class="form-control" id="billCity" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Postcode / ZIP</label>
+                  <input type="text" class="form-control" id="billPostcode" />
+                </div>
+                <div class="form-group full-width">
+                  <label class="form-label">Country</label>
+                  <select class="form-control" id="billCountry">
+                    <option value="">Select country</option>
+                    <option value="GBR" selected>United Kingdom</option>
+                    <option value="USA">United States</option>
+                    <option value="AUS">Australia</option>
+                    <option value="CAN">Canada</option>
+                    <option value="DEU">Germany</option>
+                    <option value="FRA">France</option>
+                    <option value="ARE">United Arab Emirates</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Terms & conditions -->
+          <div style="margin-bottom:1.5rem; background:white; border-radius:var(--radius); padding:1.25rem; box-shadow:var(--shadow);">
+            <label style="display:flex; align-items:flex-start; gap:0.75rem; cursor:pointer; font-size:0.875rem; line-height:1.5; color:var(--ba-grey-dark);">
+              <input type="checkbox" id="termsAccept" style="margin-top:0.2rem; flex-shrink:0;" />
+              I have read and agree to British Airways' <a href="#" style="color:var(--ba-blue);">Terms and Conditions</a> and <a href="#" style="color:var(--ba-blue);">Privacy Policy</a>. I confirm that all passenger details are correct and I understand that name changes after booking may incur a fee.
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg btn-full" id="payNowBtn">
+            🔒 Pay now — <span id="payAmount">£374</span>
+          </button>
+          <p style="font-size:0.75rem; color:var(--ba-grey); text-align:center; margin-top:0.75rem;">
+            By clicking Pay now you authorise British Airways to charge your card. This is a demo — no real payment will be taken.
+          </p>
+        </form>
+      </div>
+
+      <!-- Order summary sidebar -->
+      <div class="sidebar">
+        <div class="booking-summary">
+          <div class="booking-summary__header">
+            <h3>Order summary</h3>
+          </div>
+          <div class="booking-summary__body">
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Flight</span>
+              <span class="booking-summary__value" id="summaryFlight">BA0117</span>
+            </div>
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Route</span>
+              <span class="booking-summary__value">LHR → JFK</span>
+            </div>
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Cabin</span>
+              <span class="booking-summary__value" id="summaryCabin">Economy</span>
+            </div>
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Seat</span>
+              <span class="booking-summary__value" id="summarySeat">Assigned at check-in</span>
+            </div>
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Base fare</span>
+              <span class="booking-summary__value" id="summaryFare">£349</span>
+            </div>
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Seat fee</span>
+              <span class="booking-summary__value" id="summarySeatFee">—</span>
+            </div>
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Taxes &amp; charges</span>
+              <span class="booking-summary__value">£25</span>
+            </div>
+            <div class="booking-summary__total">
+              <span class="booking-summary__total-label">Total payable</span>
+              <span class="booking-summary__total-amount" id="summaryTotal">£374</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:1rem;">
+          <div class="card-body" style="font-size:0.8rem; color:var(--ba-grey-dark);">
+            <p style="margin-bottom:0.75rem; font-weight:700; color:var(--ba-navy);">What's included</p>
+            <p style="margin-bottom:0.4rem;">✈️ Return flight LHR ↔ JFK</p>
+            <p style="margin-bottom:0.4rem;">🧳 1 x 23kg checked bag</p>
+            <p style="margin-bottom:0.4rem;">👜 1 x cabin bag</p>
+            <p style="margin-bottom:0.4rem;">🍽️ Complimentary meal service</p>
+            <p>📺 In-flight entertainment</p>
+          </div>
+        </div>
+
+        <!-- Avios earn -->
+        <div style="background:linear-gradient(135deg, var(--ba-navy), var(--ba-dark-blue)); color:white; border-radius:var(--radius); padding:1.25rem; margin-top:1rem; font-size:0.875rem;">
+          <p style="color:var(--ba-gold); font-weight:700; margin-bottom:0.4rem;">✨ You'll earn Avios</p>
+          <p style="color:rgba(255,255,255,0.8);">Up to <strong style="color:white;">3,490 Avios</strong> on this booking with your Executive Club card.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 British Airways Plc. This is a demo site built for Amplitude analytics demonstration purposes.</p>
+  </footer>
+
+  <script src="assets/js/nav.js"></script>
+  <script>
+    // Populate from booking state
+    var booking = window.BA.getBooking();
+    var taxes   = 25;
+
+    if (booking.flightId)    document.getElementById('summaryFlight').textContent = booking.flightId;
+    if (booking.cabin)       document.getElementById('summaryCabin').textContent  = booking.cabin;
+    if (booking.seat)        document.getElementById('summarySeat').textContent   = booking.seat;
+    if (booking.baseFare)    document.getElementById('summaryFare').textContent   = '£' + booking.baseFare;
+    if (booking.seatFee != null) document.getElementById('summarySeatFee').textContent = booking.seatFee === 0 ? 'Free' : '£' + booking.seatFee;
+
+    var grandTotal = (booking.totalPayable || booking.baseFare || 349) + taxes;
+    document.getElementById('summaryTotal').textContent = '£' + grandTotal;
+    document.getElementById('payAmount').textContent    = '£' + grandTotal;
+    document.getElementById('payNowBtn').querySelector('span').textContent = '£' + grandTotal;
+
+    // Store updated total back into booking
+    window.BA.setBooking(Object.assign(booking, { totalPayable: grandTotal }));
+
+    // Format card number with spaces
+    document.getElementById('cardNumber').addEventListener('input', function () {
+      var v = this.value.replace(/\D/g, '').substring(0, 16);
+      this.value = v.match(/.{1,4}/g) ? v.match(/.{1,4}/g).join(' ') : v;
+    });
+
+    // Pay now — no Amplitude events here (payment details never tracked)
+    document.getElementById('paymentForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!document.getElementById('termsAccept').checked) {
+        alert('Please accept the Terms and Conditions to proceed.');
+        return;
+      }
+      // Show processing state briefly then redirect
+      var btn = document.getElementById('payNowBtn');
+      btn.textContent = 'Processing…';
+      btn.disabled = true;
+      setTimeout(function () {
+        window.location.href = 'confirmation.html';
+      }, 1200);
+    });
+  </script>
+</body>
+</html>

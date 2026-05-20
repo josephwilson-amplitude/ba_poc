@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>British Airways — Book Flights</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.js"></script>
+  <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.engagement.js"></script>
+  <script src="assets/js/amplitude.js"></script>
+</head>
+<body>
+
+  <div id="nav-root"></div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__content">
+      <p class="hero__tagline">The world's favourite airline</p>
+      <h1 class="hero__title">Fly the flag</h1>
+      <p class="hero__subtitle">Discover the world with British Airways. Award-winning service, hundreds of destinations.</p>
+    </div>
+
+    <!-- Search form -->
+    <div class="search-card" style="margin-top:2rem; position:relative; z-index:2;">
+      <div class="search-tabs">
+        <button class="search-tab active" type="button">Return</button>
+        <button class="search-tab" type="button">One way</button>
+        <button class="search-tab" type="button">Multi-city</button>
+      </div>
+
+      <form id="searchForm" autocomplete="off">
+        <div class="search-grid">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">From</label>
+            <input type="text" id="searchFrom" class="form-control" value="London (LHR)" placeholder="City or airport" />
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">To</label>
+            <div style="position:relative;">
+              <input type="text" id="searchTo" class="form-control" placeholder="City or airport" />
+              <div id="autocomplete-dropdown" style="display:none; position:absolute; top:100%; left:0; right:0; background:white; border:1.5px solid #E8EBF0; border-radius:4px; z-index:50; box-shadow:0 4px 12px rgba(0,0,0,0.12); max-height:200px; overflow-y:auto;"></div>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Depart</label>
+            <input type="date" id="searchDepart" class="form-control" />
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Return</label>
+            <input type="date" id="searchReturn" class="form-control" />
+          </div>
+          <div></div>
+        </div>
+
+        <div class="search-grid-row2" style="margin-top:1rem;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Passengers</label>
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <button type="button" id="passDec" style="width:36px;height:36px;border:1.5px solid #E8EBF0;border-radius:4px;background:white;font-size:1.2rem;cursor:pointer;font-family:inherit;">−</button>
+              <input type="number" id="searchPassengers" class="form-control" value="1" min="1" max="9" style="text-align:center; width:56px; flex-shrink:0;" readonly />
+              <button type="button" id="passInc" style="width:36px;height:36px;border:1.5px solid #E8EBF0;border-radius:4px;background:white;font-size:1.2rem;cursor:pointer;font-family:inherit;">+</button>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Cabin class</label>
+            <select id="searchCabin" class="form-control">
+              <option value="Economy">Economy</option>
+              <option value="Premium Economy">Premium Economy</option>
+              <option value="Business">Business (Club World)</option>
+              <option value="First">First</option>
+            </select>
+          </div>
+          <div style="display:flex; align-items:flex-end;">
+            <button type="submit" class="btn btn-primary btn-lg btn-full">Search flights</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Main content -->
+  <main class="page-wrap">
+
+    <!-- Popular destinations -->
+    <section class="destinations-section">
+      <h2>Popular destinations</h2>
+      <div class="destinations-grid">
+        <div class="dest-card" data-dest="New York" data-code="JFK">
+          <div class="dest-card__img nyc">🗽</div>
+          <div class="dest-card__body">
+            <div class="dest-card__city">New York (JFK)</div>
+            <div class="dest-card__from">From</div>
+            <div class="dest-card__price">£349</div>
+          </div>
+        </div>
+        <div class="dest-card" data-dest="Dubai" data-code="DXB">
+          <div class="dest-card__img dxb">🏙️</div>
+          <div class="dest-card__body">
+            <div class="dest-card__city">Dubai (DXB)</div>
+            <div class="dest-card__from">From</div>
+            <div class="dest-card__price">£289</div>
+          </div>
+        </div>
+        <div class="dest-card" data-dest="Sydney" data-code="SYD">
+          <div class="dest-card__img syd">🦘</div>
+          <div class="dest-card__body">
+            <div class="dest-card__city">Sydney (SYD)</div>
+            <div class="dest-card__from">From</div>
+            <div class="dest-card__price">£899</div>
+          </div>
+        </div>
+        <div class="dest-card" data-dest="Paris" data-code="CDG">
+          <div class="dest-card__img cdg">🗼</div>
+          <div class="dest-card__body">
+            <div class="dest-card__city">Paris (CDG)</div>
+            <div class="dest-card__from">From</div>
+            <div class="dest-card__price">£89</div>
+          </div>
+        </div>
+        <div class="dest-card" data-dest="Los Angeles" data-code="LAX">
+          <div class="dest-card__img lax">🌴</div>
+          <div class="dest-card__body">
+            <div class="dest-card__city">Los Angeles (LAX)</div>
+            <div class="dest-card__from">From</div>
+            <div class="dest-card__price">£549</div>
+          </div>
+        </div>
+        <div class="dest-card" data-dest="Chicago" data-code="ORD">
+          <div class="dest-card__img ord">🏙️</div>
+          <div class="dest-card__body">
+            <div class="dest-card__city">Chicago (ORD)</div>
+            <div class="dest-card__from">From</div>
+            <div class="dest-card__price">£399</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Promotional banner (fires Sale Promotion Viewed on scroll) -->
+    <div id="promoBanner" class="promo-banner">
+      <div class="promo-banner__content">
+        <h2>Winter Sale — Save up to 15%</h2>
+        <p>Book by 31 January and save on selected long-haul routes. Earn double Avios on every booking this month.</p>
+      </div>
+      <a href="offers.html" class="btn btn-gold btn-lg" style="white-space:nowrap;">View all offers</a>
+    </div>
+
+    <!-- Executive Club section -->
+    <section style="margin-top:3rem; display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+      <div class="card">
+        <div class="card-body">
+          <div style="font-size:2rem; margin-bottom:0.75rem;">✈️</div>
+          <h3 style="color:var(--ba-navy); margin-bottom:0.5rem;">Executive Club</h3>
+          <p class="text-muted" style="margin-bottom:1rem;">Earn Avios every time you fly, spend or shop. Redeem for flights, upgrades and more.</p>
+          <a href="#" class="btn btn-outline">Join free</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <div style="font-size:2rem; margin-bottom:0.75rem;">💼</div>
+          <h3 style="color:var(--ba-navy); margin-bottom:0.5rem;">Business Travel</h3>
+          <p class="text-muted" style="margin-bottom:1rem;">Tailored solutions for corporate travel. Dedicated account managers and flexible booking terms.</p>
+          <a href="#" class="btn btn-outline">Learn more</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 British Airways Plc. Registered in England. This is a demo site built for Amplitude analytics demonstration purposes.</p>
+    <p style="margin-top:0.5rem;"><a href="#">Privacy policy</a> · <a href="#">Cookie policy</a> · <a href="#">Terms & conditions</a></p>
+  </footer>
+
+  <script src="assets/js/nav.js"></script>
+  <script>
+    // Set default dates
+    (function () {
+      var today = new Date();
+      var next  = new Date(today); next.setDate(today.getDate() + 7);
+      var ret   = new Date(today); ret.setDate(today.getDate() + 14);
+      function fmt(d) { return d.toISOString().split('T')[0]; }
+      document.getElementById('searchDepart').value = fmt(next);
+      document.getElementById('searchReturn').value = fmt(ret);
+    })();
+
+    // Passenger stepper
+    document.getElementById('passDec').addEventListener('click', function () {
+      var inp = document.getElementById('searchPassengers');
+      if (parseInt(inp.value) > 1) inp.value = parseInt(inp.value) - 1;
+    });
+    document.getElementById('passInc').addEventListener('click', function () {
+      var inp = document.getElementById('searchPassengers');
+      if (parseInt(inp.value) < 9) inp.value = parseInt(inp.value) + 1;
+    });
+
+    // Destination autocomplete suggestions
+    var DESTINATIONS = [
+      { label: 'New York (JFK)', value: 'JFK' },
+      { label: 'Dubai (DXB)', value: 'DXB' },
+      { label: 'Sydney (SYD)', value: 'SYD' },
+      { label: 'Paris (CDG)', value: 'CDG' },
+      { label: 'Los Angeles (LAX)', value: 'LAX' },
+      { label: 'Chicago (ORD)', value: 'ORD' },
+      { label: 'Tokyo (HND)', value: 'HND' },
+      { label: 'Singapore (SIN)', value: 'SIN' },
+      { label: 'Cape Town (CPT)', value: 'CPT' },
+      { label: 'Miami (MIA)', value: 'MIA' }
+    ];
+
+    var searchTo = document.getElementById('searchTo');
+    var dropdown = document.getElementById('autocomplete-dropdown');
+    var destTypingTimer;
+
+    searchTo.addEventListener('input', function () {
+      clearTimeout(destTypingTimer);
+      var val = this.value;
+      if (val.length < 2) { dropdown.style.display = 'none'; return; }
+
+      destTypingTimer = setTimeout(function () {
+        window.amplitude.track('Destination Searched', {
+          destination_query: val,
+          flights_returned: 0
+        });
+      }, 400);
+
+      var matches = DESTINATIONS.filter(function (d) {
+        return d.label.toLowerCase().includes(val.toLowerCase());
+      });
+
+      if (!matches.length) { dropdown.style.display = 'none'; return; }
+      dropdown.innerHTML = matches.map(function (d) {
+        return '<div style="padding:0.6rem 0.9rem; cursor:pointer; font-size:0.875rem; border-bottom:1px solid #E8EBF0;" data-value="' + d.label + '">' + d.label + '</div>';
+      }).join('');
+      dropdown.style.display = 'block';
+    });
+
+    dropdown.addEventListener('click', function (e) {
+      var item = e.target.closest('[data-value]');
+      if (item) {
+        searchTo.value = item.dataset.value;
+        dropdown.style.display = 'none';
+      }
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!searchTo.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+      }
+    });
+
+    // Destination card quick-fill
+    document.querySelectorAll('.dest-card').forEach(function (card) {
+      card.addEventListener('click', function () {
+        var dest = this.dataset.dest;
+        var code = this.dataset.code;
+        searchTo.value = dest + ' (' + code + ')';
+        document.getElementById('searchForm').scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Search submit
+    document.getElementById('searchForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var destination = searchTo.value;
+      var cabin       = document.getElementById('searchCabin').value;
+      var passengers  = parseInt(document.getElementById('searchPassengers').value) || 1;
+
+      window.amplitude.track('Flight Search Completed', {
+        destination_query:     destination,
+        flights_returned:      Math.floor(Math.random() * 15) + 5,
+        is_returning_customer: !!localStorage.getItem('ba_demo_user'),
+        cabin_class:           cabin
+      });
+
+      window.BA.setBooking({ destination: destination, cabin: cabin, passengers: passengers });
+      window.location.href = 'results.html?to=' + encodeURIComponent(destination) + '&cabin=' + encodeURIComponent(cabin);
+    });
+
+    // Search tab toggle
+    document.querySelectorAll('.search-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        document.querySelectorAll('.search-tab').forEach(function (t) { t.classList.remove('active'); });
+        this.classList.add('active');
+        var returnField = document.getElementById('searchReturn').closest('.form-group');
+        if (!returnField) return;
+        returnField.style.display = this.textContent.trim() === 'One way' ? 'none' : '';
+      });
+    });
+
+    // Promo banner IntersectionObserver
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          window.amplitude.track('Sale Promotion Viewed', {
+            offer_type:    'avios_bonus',
+            discount_pct:  0.15,
+            saving_amount: 0
+          });
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+    observer.observe(document.getElementById('promoBanner'));
+  </script>
+</body>
+</html>

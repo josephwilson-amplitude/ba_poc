@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>British Airways — Seat Selection</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.js"></script>
+  <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.engagement.js"></script>
+  <script src="assets/js/amplitude.js"></script>
+</head>
+<body>
+
+  <div id="nav-root"></div>
+
+  <!-- Step progress bar -->
+  <div style="background:white; border-bottom:1px solid var(--ba-grey-light); padding:0 2rem;">
+    <div style="max-width:1100px; margin:0 auto; display:flex; align-items:center; height:52px; gap:0;">
+      <div class="step-item active"><span class="step-num">1</span><span class="step-label">Search</span></div>
+      <div class="step-divider"></div>
+      <div class="step-item active"><span class="step-num">2</span><span class="step-label">Select flight</span></div>
+      <div class="step-divider"></div>
+      <div class="step-item active"><span class="step-num">3</span><span class="step-label">Passenger details</span></div>
+      <div class="step-divider"></div>
+      <div class="step-item active current"><span class="step-num">4</span><span class="step-label">Seat selection</span></div>
+      <div class="step-divider"></div>
+      <div class="step-item"><span class="step-num">5</span><span class="step-label">Payment</span></div>
+    </div>
+  </div>
+
+  <style>
+    .step-item { display:flex; align-items:center; gap:0.5rem; padding:0 0.75rem; white-space:nowrap; }
+    .step-num  { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; background:var(--ba-grey-light); color:var(--ba-grey); flex-shrink:0; }
+    .step-label { font-size:0.8rem; color:var(--ba-grey); font-weight:500; }
+    .step-item.active .step-num { background:var(--ba-blue); color:white; }
+    .step-item.active .step-label { color:var(--ba-blue); }
+    .step-item.current .step-label { font-weight:700; }
+    .step-divider { flex:1; height:1px; background:var(--ba-grey-light); min-width:24px; }
+  </style>
+
+  <main class="page-wrap">
+    <div class="sidebar-layout">
+
+      <!-- Seat map column -->
+      <div>
+        <div class="page-header">
+          <h1>Choose your seat</h1>
+          <p>Select your preferred seat for flight <span id="seatFlightId">BA0117</span>.</p>
+        </div>
+
+        <!-- ⚡ FRICTION: fee notice shown immediately on page load -->
+        <div class="fee-notice" id="feeNotice">
+          <span class="fee-notice__icon">💺</span>
+          <div class="fee-notice__text">
+            <strong>Seat selection from £15.00 per person</strong>
+            <span>Seat fees are added to your total. You can skip and be automatically assigned a seat at check-in.</span>
+          </div>
+        </div>
+
+        <!-- Seat map -->
+        <div class="seat-map">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+            <h3 style="color:var(--ba-navy);">Boeing 777 — Economy cabin</h3>
+            <span style="font-size:0.8rem; color:var(--ba-grey);">Rows 20–26 shown</span>
+          </div>
+
+          <!-- Aircraft nose indicator -->
+          <div style="text-align:center; font-size:0.75rem; color:var(--ba-grey); margin-bottom:0.5rem; letter-spacing:0.08em; text-transform:uppercase;">✈ Front of aircraft</div>
+
+          <!-- Column labels -->
+          <div style="display:flex; justify-content:center; gap:0.4rem; margin-bottom:0.3rem; padding-left:1.9rem;">
+            <div style="width:36px; text-align:center; font-size:0.7rem; color:var(--ba-grey); font-weight:700;">A</div>
+            <div style="width:36px; text-align:center; font-size:0.7rem; color:var(--ba-grey); font-weight:700;">B</div>
+            <div style="width:36px; text-align:center; font-size:0.7rem; color:var(--ba-grey); font-weight:700;">C</div>
+            <div style="width:1.5rem;"></div>
+            <div style="width:36px; text-align:center; font-size:0.7rem; color:var(--ba-grey); font-weight:700;">D</div>
+            <div style="width:36px; text-align:center; font-size:0.7rem; color:var(--ba-grey); font-weight:700;">E</div>
+            <div style="width:36px; text-align:center; font-size:0.7rem; color:var(--ba-grey); font-weight:700;">F</div>
+          </div>
+
+          <div class="seat-map__plane" id="seatGrid"></div>
+
+          <!-- Legend -->
+          <div class="seat-legend">
+            <div class="seat-legend-item">
+              <div class="seat-legend-dot" style="background:#DBEAFE; border:1.5px solid #BFDBFE;"></div>
+              <span>£15 — Standard</span>
+            </div>
+            <div class="seat-legend-item">
+              <div class="seat-legend-dot" style="background:#D1FAE5; border:1.5px solid #A7F3D0;"></div>
+              <span>£25 — Extra legroom</span>
+            </div>
+            <div class="seat-legend-item">
+              <div class="seat-legend-dot" style="background:#FEF3C7; border:1.5px solid #FDE68A;"></div>
+              <span>£35 — Exit row</span>
+            </div>
+            <div class="seat-legend-item">
+              <div class="seat-legend-dot" style="background:#F3E8FF; border:1.5px solid #DDD6FE;"></div>
+              <span>Complimentary</span>
+            </div>
+            <div class="seat-legend-item">
+              <div class="seat-legend-dot" style="background:var(--ba-grey-light);"></div>
+              <span>Unavailable</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary sidebar -->
+      <div class="sidebar">
+        <div class="booking-summary">
+          <div class="booking-summary__header">
+            <h3>Your booking</h3>
+          </div>
+          <div class="booking-summary__body">
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Flight</span>
+              <span class="booking-summary__value" id="summaryFlight">BA0117</span>
+            </div>
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Cabin</span>
+              <span class="booking-summary__value" id="summaryCabin">Economy</span>
+            </div>
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Base fare</span>
+              <span class="booking-summary__value" id="summaryFare">£349</span>
+            </div>
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Seat fee</span>
+              <span class="booking-summary__value" id="summarySeatFee">—</span>
+            </div>
+            <div class="booking-summary__total">
+              <span class="booking-summary__total-label">Total</span>
+              <span class="booking-summary__total-amount" id="summaryTotal">£349</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seat summary panel -->
+        <div class="seat-summary">
+          <h3>Selected seat</h3>
+          <div class="seat-summary__selected" id="selectedSeatLabel">—</div>
+          <div class="seat-summary__info" id="selectedSeatInfo">No seat selected. You will be assigned a seat at check-in.</div>
+
+          <button class="btn btn-primary btn-full" id="confirmSeat" data-seat-fee="25" disabled style="opacity:0.5; margin-bottom:0.75rem;">
+            Confirm seat selection
+          </button>
+          <a href="payment.html" id="skipSeat" class="btn btn-ghost btn-full" style="text-align:center;">
+            Skip — assign at check-in
+          </a>
+          <p style="font-size:0.75rem; color:var(--ba-grey); margin-top:0.75rem; text-align:center;">Skipping is free. Your seat will be allocated at check-in.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 British Airways Plc. This is a demo site built for Amplitude analytics demonstration purposes.</p>
+  </footer>
+
+  <script src="assets/js/nav.js"></script>
+  <script>
+    var booking = window.BA.getBooking();
+    var stored  = localStorage.getItem('ba_demo_user');
+    var isExec  = stored ? (function () { try { return !!JSON.parse(stored).isExecClub; } catch (e) { return false; } })() : false;
+
+    // Update sidebar
+    if (booking.flightId) document.getElementById('summaryFlight').textContent = booking.flightId;
+    if (booking.cabin)    document.getElementById('summaryCabin').textContent  = booking.cabin;
+    if (booking.baseFare) {
+      document.getElementById('summaryFare').textContent  = '£' + booking.baseFare;
+      document.getElementById('summaryTotal').textContent = '£' + booking.baseFare;
+    }
+
+    // ⚡ Seat Selection Abandoned fires on page load — this is the friction event
+    window.addEventListener('DOMContentLoaded', function () {
+      var seatFee = isExec ? 0 : 25;
+      window.amplitude.track('Seat Selection Abandoned', {
+        total_fare:                  booking.baseFare || 299,
+        seat_fee:                    seatFee,
+        taxes_and_charges:           0,
+        total_payable:               (booking.baseFare || 299) + seatFee,
+        complimentary_seat_eligible: isExec
+      });
+
+      if (isExec) {
+        document.getElementById('feeNotice').innerHTML =
+          '<span class="fee-notice__icon">✨</span>' +
+          '<div class="fee-notice__text">' +
+          '<strong style="color:var(--ba-success);">Complimentary seat selection — Executive Club benefit</strong>' +
+          '<span>As an Executive Club member, seat selection is included at no extra charge.</span>' +
+          '</div>';
+        document.getElementById('feeNotice').style.background = '#F0FDF4';
+        document.getElementById('feeNotice').style.borderColor = '#A7F3D0';
+      }
+    });
+
+    // Seat data: rows 20-26, 6 seats per row (A B C | D E F)
+    var SEAT_TIERS = {
+      20: 't35', 21: 't25', 22: 't25',  // exit/extra legroom rows
+      23: 't15', 24: 't15', 25: 't15', 26: 't15'
+    };
+
+    var TAKEN = ['20A','20B','21C','22D','22E','23A','23F','24B','24C','25D','26A','26E'];
+
+    var selectedSeat = null;
+    var seatFeeMap   = { t15: 15, t25: 25, t35: 35, comp: 0 };
+
+    function buildSeatMap() {
+      var html = '';
+      for (var row = 20; row <= 26; row++) {
+        var tier = isExec ? 'comp' : (SEAT_TIERS[row] || 't15');
+        var cols = ['A','B','C','D','E','F'];
+        html += '<div class="seat-row"><span class="seat-row-num">' + row + '</span>';
+        cols.forEach(function (col, idx) {
+          if (idx === 3) html += '<div class="seat-aisle"></div>';
+          var seatId   = row + col;
+          var isTaken  = TAKEN.indexOf(seatId) !== -1;
+          var cls      = isTaken ? 'taken' : tier;
+          var fee      = isTaken ? '' : (isExec ? 'Free' : '£' + seatFeeMap[tier]);
+          html += '<div class="seat ' + cls + '" data-seat="' + seatId + '" data-tier="' + tier + '" title="' + seatId + (isTaken ? ' — Unavailable' : ' — ' + fee) + '">' + col + '</div>';
+        });
+        html += '</div>';
+      }
+      document.getElementById('seatGrid').innerHTML = html;
+
+      // Click handlers
+      document.querySelectorAll('.seat:not(.taken)').forEach(function (seat) {
+        seat.addEventListener('click', function () {
+          document.querySelectorAll('.seat').forEach(function (s) { s.classList.remove('selected'); });
+          this.classList.add('selected');
+          selectedSeat = this.dataset.seat;
+          var tier     = this.dataset.tier;
+          var fee      = isExec ? 0 : (seatFeeMap[tier] || 0);
+          var base     = booking.baseFare || 299;
+          var total    = base + fee;
+
+          document.getElementById('selectedSeatLabel').textContent = selectedSeat;
+          document.getElementById('selectedSeatInfo').textContent  =
+            (fee === 0 ? 'Complimentary — no extra charge.' : 'Seat fee: £' + fee + ' · Total payable: £' + total);
+          document.getElementById('summarySeatFee').textContent = fee === 0 ? 'Free' : '£' + fee;
+          document.getElementById('summaryTotal').textContent   = '£' + total;
+
+          var btn = document.getElementById('confirmSeat');
+          btn.disabled = false;
+          btn.style.opacity = '1';
+          btn.dataset.seatFee = fee;
+        });
+      });
+    }
+
+    buildSeatMap();
+
+    // Confirm seat
+    document.getElementById('confirmSeat').addEventListener('click', function () {
+      if (this.disabled) return;
+      var base       = booking.baseFare || 299;
+      var seatFee    = parseFloat(this.dataset.seatFee || 25);
+      var total      = base + seatFee;
+
+      window.amplitude.track('Seat Selection Confirmed', {
+        flight_id:                   booking.flightId || 'BA0117',
+        cabin_class:                 booking.cabin    || 'Economy',
+        base_fare:                   base,
+        seat_fee:                    seatFee,
+        total_payable:               total,
+        complimentary_seat_eligible: isExec
+      });
+
+      window.BA.setBooking(Object.assign(booking, {
+        seat:         selectedSeat,
+        seatFee:      seatFee,
+        totalPayable: total
+      }));
+      window.location.href = 'payment.html';
+    });
+  </script>
+</body>
+</html>

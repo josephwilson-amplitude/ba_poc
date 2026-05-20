@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>British Airways — Passenger Details</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.js"></script>
+  <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.engagement.js"></script>
+  <script src="assets/js/amplitude.js"></script>
+</head>
+<body>
+
+  <div id="nav-root"></div>
+
+  <!-- Step progress bar -->
+  <div style="background:white; border-bottom:1px solid var(--ba-grey-light); padding:0 2rem;">
+    <div style="max-width:1100px; margin:0 auto; display:flex; align-items:center; height:52px; gap:0;">
+      <div class="step-item active">
+        <span class="step-num">1</span>
+        <span class="step-label">Search</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step-item active">
+        <span class="step-num">2</span>
+        <span class="step-label">Select flight</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step-item active current">
+        <span class="step-num">3</span>
+        <span class="step-label">Passenger details</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step-item">
+        <span class="step-num">4</span>
+        <span class="step-label">Seat selection</span>
+      </div>
+      <div class="step-divider"></div>
+      <div class="step-item">
+        <span class="step-num">5</span>
+        <span class="step-label">Payment</span>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .step-item { display:flex; align-items:center; gap:0.5rem; padding:0 0.75rem; white-space:nowrap; }
+    .step-num  { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; background:var(--ba-grey-light); color:var(--ba-grey); flex-shrink:0; }
+    .step-label { font-size:0.8rem; color:var(--ba-grey); font-weight:500; }
+    .step-item.active .step-num { background:var(--ba-blue); color:white; }
+    .step-item.active .step-label { color:var(--ba-blue); }
+    .step-item.current .step-label { font-weight:700; }
+    .step-divider { flex:1; height:1px; background:var(--ba-grey-light); min-width:24px; }
+  </style>
+
+  <main class="page-wrap">
+    <div class="sidebar-layout">
+
+      <!-- Main form -->
+      <div>
+        <div class="page-header">
+          <h1>Passenger details</h1>
+          <p>Please enter details exactly as they appear on the passport used for travel.</p>
+        </div>
+
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div class="card-header" style="display:flex; align-items:center; gap:0.75rem;">
+            <span style="background:var(--ba-blue); color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; flex-shrink:0;">1</span>
+            <h3 style="color:var(--ba-navy);">Passenger 1 — Lead passenger</h3>
+          </div>
+          <div class="card-body">
+            <form id="passengersForm" novalidate>
+              <div class="passengers-grid">
+                <div class="form-group">
+                  <label class="form-label">Title</label>
+                  <select class="form-control" id="pTitle" required>
+                    <option value="">Select</option>
+                    <option value="Mr">Mr</option>
+                    <option value="Mrs">Mrs</option>
+                    <option value="Ms">Ms</option>
+                    <option value="Miss">Miss</option>
+                    <option value="Dr">Dr</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <!-- spacer -->
+                </div>
+                <div class="form-group">
+                  <label class="form-label">First name</label>
+                  <input type="text" class="form-control" id="pFirstName" placeholder="As on passport" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Last name</label>
+                  <input type="text" class="form-control" id="pLastName" placeholder="As on passport" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Date of birth</label>
+                  <input type="date" class="form-control" id="pDob" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Nationality</label>
+                  <select class="form-control" id="pNationality" required>
+                    <option value="">Select country</option>
+                    <option value="GBR">United Kingdom</option>
+                    <option value="USA">United States</option>
+                    <option value="AUS">Australia</option>
+                    <option value="CAN">Canada</option>
+                    <option value="DEU">Germany</option>
+                    <option value="FRA">France</option>
+                    <option value="IND">India</option>
+                    <option value="JPN">Japan</option>
+                    <option value="SGP">Singapore</option>
+                    <option value="ZAF">South Africa</option>
+                    <option value="ARE">United Arab Emirates</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                </div>
+                <div class="form-group full-width">
+                  <label class="form-label">Passport number</label>
+                  <input type="text" class="form-control" id="pPassport" placeholder="e.g. 123456789" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Passport expiry date</label>
+                  <input type="date" class="form-control" id="pPassportExpiry" required />
+                </div>
+                <div class="form-group">
+                  <!-- spacer -->
+                </div>
+              </div>
+
+              <hr class="divider" />
+              <h3 style="color:var(--ba-navy); margin-bottom:1.25rem;">Contact details</h3>
+
+              <div class="passengers-grid">
+                <div class="form-group">
+                  <label class="form-label">Email address</label>
+                  <input type="email" class="form-control" id="pEmail" placeholder="For booking confirmation" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Phone number</label>
+                  <input type="tel" class="form-control" id="pPhone" placeholder="+44 7700 900000" />
+                </div>
+                <div class="form-group full-width">
+                  <label class="form-label">Executive Club number <span style="font-weight:400; color:var(--ba-grey);">(optional)</span></label>
+                  <input type="text" class="form-control" id="pExecClub" placeholder="e.g. 123456789" />
+                </div>
+              </div>
+
+              <hr class="divider" />
+
+              <!-- Special requests -->
+              <div style="margin-bottom:1.5rem;">
+                <h3 style="color:var(--ba-navy); margin-bottom:1rem;">Special requests <span style="font-weight:400; color:var(--ba-grey); font-size:0.875rem;">(optional)</span></h3>
+                <div style="display:flex; flex-wrap:wrap; gap:0.75rem;">
+                  <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.875rem; cursor:pointer;">
+                    <input type="checkbox" /> Wheelchair assistance
+                  </label>
+                  <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.875rem; cursor:pointer;">
+                    <input type="checkbox" /> Vegetarian meal
+                  </label>
+                  <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.875rem; cursor:pointer;">
+                    <input type="checkbox" /> Gluten-free meal
+                  </label>
+                  <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.875rem; cursor:pointer;">
+                    <input type="checkbox" /> Travelling with infant
+                  </label>
+                </div>
+              </div>
+
+              <div style="display:flex; gap:1rem; align-items:center; flex-wrap:wrap;">
+                <button type="submit" class="btn btn-primary btn-lg">Continue to seat selection →</button>
+                <a href="index.html" id="cancelBooking" class="text-muted" style="font-size:0.875rem; cursor:pointer;">Cancel booking</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Booking summary sidebar -->
+      <div class="sidebar">
+        <div class="booking-summary">
+          <div class="booking-summary__header">
+            <h3>Your booking</h3>
+          </div>
+          <div class="booking-summary__body">
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Flight</span>
+              <span class="booking-summary__value" id="summaryFlight">BA0117</span>
+            </div>
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Route</span>
+              <span class="booking-summary__value" id="summaryRoute">LHR → JFK</span>
+            </div>
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Cabin</span>
+              <span class="booking-summary__value" id="summaryCabin">Economy</span>
+            </div>
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Passengers</span>
+              <span class="booking-summary__value" id="summaryPax">1 adult</span>
+            </div>
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Base fare</span>
+              <span class="booking-summary__value" id="summaryFare">£349</span>
+            </div>
+            <div class="booking-summary__total">
+              <span class="booking-summary__total-label">Total so far</span>
+              <span class="booking-summary__total-amount" id="summaryTotal">£349</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:1rem;">
+          <div class="card-body" style="font-size:0.8rem; color:var(--ba-grey-dark);">
+            <p style="margin-bottom:0.5rem;"><strong>🔒 Secure booking</strong></p>
+            <p>Your details are protected with 256-bit SSL encryption.</p>
+            <hr class="divider" style="margin:0.75rem 0;" />
+            <p style="margin-bottom:0.25rem;">✅ Free cancellation within 24 hours</p>
+            <p style="margin-bottom:0.25rem;">✅ Price guarantee</p>
+            <p>✅ Instant confirmation</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 British Airways Plc. This is a demo site built for Amplitude analytics demonstration purposes.</p>
+  </footer>
+
+  <script src="assets/js/nav.js"></script>
+  <script>
+    // Populate booking summary from sessionStorage
+    var booking = window.BA.getBooking();
+    if (booking.flightId)  document.getElementById('summaryFlight').textContent = booking.flightId;
+    if (booking.destination) document.getElementById('summaryRoute').textContent = 'LHR → ' + booking.destination;
+    if (booking.cabin)     document.getElementById('summaryCabin').textContent  = booking.cabin;
+    if (booking.passengers) document.getElementById('summaryPax').textContent   = booking.passengers + ' adult' + (booking.passengers > 1 ? 's' : '');
+    if (booking.baseFare) {
+      document.getElementById('summaryFare').textContent  = '£' + booking.baseFare;
+      document.getElementById('summaryTotal').textContent = '£' + booking.baseFare;
+    }
+
+    // Pre-fill from logged-in user if available
+    var stored = localStorage.getItem('ba_demo_user');
+    if (stored) {
+      try {
+        var u = JSON.parse(stored);
+        if (u.name) {
+          var parts = u.name.trim().split(' ');
+          if (parts.length >= 2) {
+            document.getElementById('pFirstName').value = parts.slice(0, -1).join(' ');
+            document.getElementById('pLastName').value  = parts[parts.length - 1];
+          } else {
+            document.getElementById('pFirstName').value = u.name;
+          }
+        }
+      } catch (e) { /* ignore */ }
+    }
+
+    // Form submit
+    document.getElementById('passengersForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      // Basic validation
+      var required = ['pTitle', 'pFirstName', 'pLastName', 'pDob', 'pNationality', 'pPassport', 'pEmail'];
+      var missing = required.filter(function (id) { return !document.getElementById(id).value; });
+      if (missing.length) {
+        document.getElementById(missing[0]).focus();
+        document.getElementById(missing[0]).style.borderColor = 'var(--ba-error)';
+        return;
+      }
+
+      var b = window.BA.getBooking();
+
+      window.amplitude.track('Passenger Details Submitted', {
+        flight_id:   b.flightId  || 'BA0117',
+        cabin_class: b.cabin     || 'Economy',
+        base_fare:   b.baseFare  || 299,
+        total_fare:  b.baseFare  || 299
+      });
+
+      window.location.href = 'seats.html';
+    });
+
+    // Cancel
+    document.getElementById('cancelBooking').addEventListener('click', function (e) {
+      e.preventDefault();
+      window.amplitude.track('Booking Abandoned', {
+        flight_id: window.BA.getBooking().flightId || 'BA0117'
+      });
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>

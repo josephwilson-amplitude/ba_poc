@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>British Airways — Offers &amp; Promotions</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.js"></script>
+  <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.engagement.js"></script>
+  <script src="assets/js/amplitude.js"></script>
+</head>
+<body>
+
+  <div id="nav-root"></div>
+
+  <!-- Page hero -->
+  <div style="background:linear-gradient(135deg, var(--ba-navy) 0%, var(--ba-dark-blue) 50%, var(--ba-blue) 100%); color:white; padding:3rem 2rem 3.5rem;">
+    <div style="max-width:1100px; margin:0 auto; text-align:center;">
+      <p style="font-size:0.8rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--ba-gold); margin-bottom:0.5rem;">Limited time</p>
+      <h1 style="font-size:2.5rem; font-weight:800; margin-bottom:0.75rem;">Offers &amp; Promotions</h1>
+      <p style="color:rgba(255,255,255,0.75); font-size:1rem; max-width:520px; margin:0 auto;">Exclusive deals on flights, upgrades and more. Book today and save with British Airways.</p>
+    </div>
+  </div>
+
+  <main class="page-wrap">
+
+    <!-- Offer cards -->
+    <section style="margin-bottom:0.5rem;">
+      <h2 style="color:var(--ba-navy); margin-bottom:1.5rem;">Current offers</h2>
+      <div class="offers-grid" id="offersGrid">
+
+        <div class="offer-card" data-offer-type="sale" data-discount="0.15">
+          <div class="offer-card__img" style="background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);">🗽</div>
+          <div class="offer-card__body">
+            <div class="offer-card__tag">Winter Sale</div>
+            <div class="offer-card__title">15% off long-haul flights</div>
+            <div class="offer-card__desc">Save on selected routes to North America, the Caribbean and Asia Pacific. Book by 31 January for travel through to October.</div>
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="font-size:1.1rem; font-weight:800; color:var(--ba-blue);">From £297</span>
+              <button class="btn btn-primary btn-sm claim-offer" data-offer="winter_sale" data-discount="0.15" data-saving="52">Claim offer</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="offer-card" data-offer-type="avios" data-discount="0">
+          <div class="offer-card__img" style="background:linear-gradient(135deg,#c9a84c,#8B6914);">✨</div>
+          <div class="offer-card__body">
+            <div class="offer-card__tag">Executive Club</div>
+            <div class="offer-card__title">Double Avios this month</div>
+            <div class="offer-card__desc">Earn double Avios on all British Airways flights booked and flown this month. Log in to your Executive Club account to activate.</div>
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="font-size:1.1rem; font-weight:800; color:var(--ba-gold);">2x Avios</span>
+              <button class="btn btn-primary btn-sm claim-offer" data-offer="double_avios" data-discount="0" data-saving="0">Activate</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="offer-card" data-offer-type="upgrade" data-discount="0.1">
+          <div class="offer-card__img" style="background:linear-gradient(135deg,#00235D,#075AAA);">💼</div>
+          <div class="offer-card__body">
+            <div class="offer-card__tag">Upgrade offer</div>
+            <div class="offer-card__title">Business upgrade from £199</div>
+            <div class="offer-card__desc">Upgrade from Economy to Club World on selected transatlantic routes. Lie-flat beds, lounge access and three-course dining included.</div>
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="font-size:1.1rem; font-weight:800; color:var(--ba-blue);">From £199</span>
+              <button class="btn btn-primary btn-sm claim-offer" data-offer="bundle" data-discount="0.10" data-saving="50">Claim offer</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="offer-card" data-offer-type="sale" data-discount="0.2">
+          <div class="offer-card__img" style="background:linear-gradient(135deg,#0077B6,#00B4D8);">🦘</div>
+          <div class="offer-card__body">
+            <div class="offer-card__tag">Flash Sale — 48 hours only</div>
+            <div class="offer-card__title">20% off Sydney &amp; Melbourne</div>
+            <div class="offer-card__desc">Our biggest Australia sale of the year. Return flights from London Heathrow with one stop. Travel between February and May.</div>
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="font-size:1.1rem; font-weight:800; color:var(--ba-blue);">From £719</span>
+              <button class="btn btn-primary btn-sm claim-offer" data-offer="flash_sale" data-discount="0.20" data-saving="180">Claim offer</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="offer-card" data-offer-type="sale" data-discount="0.12">
+          <div class="offer-card__img" style="background:linear-gradient(135deg,#8B0000,#C41E3A);">🗼</div>
+          <div class="offer-card__body">
+            <div class="offer-card__tag">City Break</div>
+            <div class="offer-card__title">Paris from £59 return</div>
+            <div class="offer-card__desc">Weekend in the city of light. Direct from London Heathrow to Paris Charles de Gaulle. Includes one cabin bag.</div>
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="font-size:1.1rem; font-weight:800; color:var(--ba-blue);">From £59</span>
+              <button class="btn btn-primary btn-sm claim-offer" data-offer="city_break" data-discount="0.12" data-saving="8">Claim offer</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="offer-card" data-offer-type="avios" data-discount="0">
+          <div class="offer-card__img" style="background:linear-gradient(135deg,#276749,#38A169);">🏆</div>
+          <div class="offer-card__body">
+            <div class="offer-card__tag">Executive Club</div>
+            <div class="offer-card__title">Tier points bonus — status challenge</div>
+            <div class="offer-card__desc">Earn 25% bonus Tier Points on all flights flown before 31 March. Ideal if you're chasing Silver or Gold status before the year end.</div>
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span style="font-size:1.1rem; font-weight:800; color:var(--ba-success);">+25% TPs</span>
+              <button class="btn btn-primary btn-sm claim-offer" data-offer="tier_challenge" data-discount="0" data-saving="0">Opt in</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Promo code section -->
+    <div class="promo-section">
+      <h2>Have a promo code?</h2>
+      <p>Enter your code below to apply a discount to your next booking.</p>
+      <form id="promoForm" novalidate>
+        <div class="promo-form">
+          <div class="form-group">
+            <label class="form-label">Promo code</label>
+            <input type="text" class="form-control" id="promoInput" placeholder="e.g. BACLUB" style="text-transform:uppercase; letter-spacing:0.08em;" />
+          </div>
+          <button type="submit" class="btn btn-primary">Apply code</button>
+        </div>
+        <p class="promo-msg" id="promoMsg"></p>
+      </form>
+    </div>
+
+    <!-- Terms note -->
+    <p style="font-size:0.75rem; color:var(--ba-grey); margin-top:2rem; text-align:center;">
+      Offers subject to availability. Terms and conditions apply. Prices shown are per person, based on a return journey including taxes and charges. British Airways reserves the right to withdraw offers at any time.
+    </p>
+
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 British Airways Plc. This is a demo site built for Amplitude analytics demonstration purposes.</p>
+  </footer>
+
+  <script src="assets/js/nav.js"></script>
+  <script>
+    // IntersectionObserver — fires Sale Promotion Viewed when each card scrolls into view
+    var viewedOffers = {};
+
+    var cardObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var card       = entry.target;
+        var offerType  = card.dataset.offerType;
+        var discount   = parseFloat(card.dataset.discount) || 0;
+        var cardId     = card.querySelector('.offer-card__title').textContent;
+
+        if (viewedOffers[cardId]) return; // fire only once per card
+        viewedOffers[cardId] = true;
+
+        window.amplitude.track('Sale Promotion Viewed', {
+          offer_type:    offerType,
+          discount_pct:  discount,
+          saving_amount: 0
+        });
+      });
+    }, { threshold: 0.4 });
+
+    document.querySelectorAll('.offer-card').forEach(function (card) {
+      cardObserver.observe(card);
+    });
+
+    // Claim offer buttons
+    document.querySelectorAll('.claim-offer').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        window.amplitude.track('Upgrade Offer Clicked', {
+          offer_type:    this.dataset.offer,
+          discount_pct:  parseFloat(this.dataset.discount) || 0,
+          saving_amount: parseFloat(this.dataset.saving)   || 0
+        });
+
+        // Redirect to search with intent
+        window.location.href = 'index.html';
+      });
+    });
+
+    // Promo code form
+    document.getElementById('promoForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var code = document.getElementById('promoInput').value.trim().toUpperCase();
+
+      window.amplitude.track('Promo Code Entered', {
+        promo_attempted: true,
+        promo_applied:   false,
+        offer_type:      'percentage_off',
+        discount_pct:    0
+      });
+
+      var msg = document.getElementById('promoMsg');
+      msg.textContent = 'Code "' + code + '" not recognised. Try BACLUB for 10% off.';
+      msg.style.color = 'var(--ba-error)';
+    });
+  </script>
+</body>
+</html>

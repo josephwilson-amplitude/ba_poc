@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>British Airways — Flight Results</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.js"></script>
+  <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.engagement.js"></script>
+  <script src="assets/js/amplitude.js"></script>
+</head>
+<body>
+
+  <div id="nav-root"></div>
+
+  <!-- Page header -->
+  <div style="background: var(--ba-navy); color:white; padding: 1.25rem 2rem;">
+    <div style="max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.75rem;">
+      <div>
+        <div style="font-size:1.3rem; font-weight:800; letter-spacing:-0.01em;" id="resultsRoute">LHR → JFK</div>
+        <div style="font-size:0.8rem; color:rgba(255,255,255,0.65); margin-top:0.2rem;" id="resultsSubtitle">Loading results…</div>
+      </div>
+      <a href="index.html" class="btn btn-ghost" style="color:rgba(255,255,255,0.8); border-color:rgba(255,255,255,0.3);">← Modify search</a>
+    </div>
+  </div>
+
+  <main class="page-wrap">
+
+    <!-- Upgrade upsell banner -->
+    <div class="upgrade-banner" id="upgradeBanner">
+      <div class="upgrade-banner__text">
+        <h3>Upgrade to Club World from £199</h3>
+        <p>Enjoy lie-flat beds, lounge access and a five-course meal on all long-haul routes.</p>
+      </div>
+      <span style="font-size:1.5rem;">✈️</span>
+    </div>
+
+    <!-- Cabin tabs -->
+    <div class="cabin-tabs" role="tablist">
+      <button class="cabin-tab active" data-cabin="Economy" role="tab">Economy</button>
+      <button class="cabin-tab" data-cabin="Premium Economy" role="tab">Premium Economy</button>
+      <button class="cabin-tab" data-cabin="Business" role="tab">Club World</button>
+      <button class="cabin-tab" data-cabin="First" role="tab">First</button>
+    </div>
+
+    <!-- Flight list -->
+    <div id="flightList"></div>
+
+    <!-- Reviews section -->
+    <section style="margin-top:2rem;">
+      <h2 style="color:var(--ba-navy); margin-bottom:1.25rem;">What our customers say</h2>
+      <div id="reviewList"></div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 British Airways Plc. This is a demo site built for Amplitude analytics demonstration purposes.</p>
+  </footer>
+
+  <script src="assets/js/nav.js"></script>
+  <script>
+    // ── Flight data ────────────────────────────────────────────────
+    var FLIGHTS = [
+      { id: 'BA0117', from: 'LHR', to: 'JFK', dep: '09:15', arr: '12:00', duration: '8h 45m', price: 349, stops: 'Non-stop' },
+      { id: 'BA0249', from: 'LHR', to: 'JFK', dep: '11:30', arr: '14:20', duration: '8h 50m', price: 389, stops: 'Non-stop' },
+      { id: 'BA0007', from: 'LHR', to: 'DXB', dep: '14:45', arr: '01:05', duration: '7h 20m', price: 289, stops: 'Non-stop' },
+      { id: 'BA0303', from: 'LHR', to: 'SYD', dep: '21:10', arr: '06:15', duration: '22h 05m', price: 899, stops: '1 stop' },
+      { id: 'BA0271', from: 'LHR', to: 'CDG', dep: '07:00', arr: '09:20', duration: '1h 20m', price: 89,  stops: 'Non-stop' },
+      { id: 'BA0069', from: 'LHR', to: 'LAX', dep: '15:20', arr: '18:45', duration: '11h 25m', price: 549, stops: 'Non-stop' }
+    ];
+
+    var CABIN_MULTIPLIERS = { 'Economy': 1, 'Premium Economy': 1.6, 'Business': 3.2, 'First': 5.5 };
+
+    var REVIEWS = [
+      { author: 'Sarah M., Silver Executive Club', rating: 5, summary: 'Exceptional Club World service', body: 'The lie-flat bed made all the difference on my overnight to New York. Crew were attentive without being intrusive, and the food was genuinely restaurant quality. Will be flying BA long-haul exclusively from now on.' },
+      { author: 'James T., Gold Executive Club', rating: 4, summary: 'Great value for Premium Economy', body: 'The wider seats and extra legroom on the A380 are well worth the step up from Economy. Pre-departure drinks in the lounge were a bonus. Slight delay on departure but crew made up most of the time.' },
+      { author: 'Priya K., Blue Executive Club', rating: 5, summary: 'Smooth booking and perfect flight', body: 'From booking to landing everything ran like clockwork. The app updates are really useful and the staff at Heathrow were friendly and efficient. Already booked my next trip.' },
+      { author: 'Michael R., Bronze Executive Club', rating: 4, summary: 'Reliable and comfortable', body: 'Solid experience as always with BA. Nothing flashy but everything works exactly as you expect. Seats comfortable, meals decent, staff professional.' }
+    ];
+
+    // ── Parse URL params ───────────────────────────────────────────
+    var params = new URLSearchParams(window.location.search);
+    var toParam   = params.get('to')    || 'New York (JFK)';
+    var cabinParam = params.get('cabin') || 'Economy';
+
+    // Restore booking from sessionStorage
+    var booking = window.BA.getBooking();
+    var activeCabin = booking.cabin || cabinParam;
+
+    // Update header
+    document.getElementById('resultsRoute').textContent = 'LHR → ' + toParam;
+    document.getElementById('resultsSubtitle').textContent =
+      'Showing ' + FLIGHTS.length + ' results · ' + activeCabin + ' · Return';
+
+    // ── Render flights ─────────────────────────────────────────────
+    function renderFlights(cabin) {
+      var multiplier = CABIN_MULTIPLIERS[cabin] || 1;
+      var cabinBadge = {
+        'Economy': 'badge-economy',
+        'Premium Economy': 'badge-premium',
+        'Business': 'badge-business',
+        'First': 'badge-first'
+      }[cabin] || 'badge-economy';
+      var cabinLabel = cabin === 'Business' ? 'Club World' : cabin;
+
+      document.getElementById('flightList').innerHTML = FLIGHTS.map(function (f) {
+        var price = Math.round(f.price * multiplier);
+        return [
+          '<div class="flight-card">',
+          '  <div>',
+          '    <div class="flight-card__route">',
+          '      <span class="flight-card__airport">' + f.from + '</span>',
+          '      <span class="flight-card__arrow">→</span>',
+          '      <span class="flight-card__airport">' + f.to + '</span>',
+          '    </div>',
+          '    <div class="flight-card__times">',
+          '      <strong>' + f.dep + '</strong>',
+          '      <span style="color:var(--ba-grey)">—</span>',
+          '      <strong>' + f.arr + '</strong>',
+          '      <span class="flight-card__duration">' + f.duration + '</span>',
+          '    </div>',
+          '    <div class="flight-card__meta" style="margin-top:0.5rem;">',
+          '      <span class="flight-card__badge ' + cabinBadge + '">' + cabinLabel + '</span>',
+          '      <span class="flight-card__badge" style="background:var(--ba-off-white);color:var(--ba-grey-dark);">' + f.stops + '</span>',
+          '      <span class="flight-card__badge" style="background:var(--ba-off-white);color:var(--ba-grey-dark);">' + f.id + '</span>',
+          '    </div>',
+          '  </div>',
+          '  <div class="flight-card__price">',
+          '    <div class="flight-card__price-label">from per person</div>',
+          '    <div class="flight-card__price-amount">£' + price + '</div>',
+          '    <div class="flight-card__actions">',
+          '      <button class="btn-save" data-flight-id="' + f.id + '" data-cabin="' + cabin + '" data-price="' + price + '" title="Save flight">♡</button>',
+          '      <button class="btn btn-primary btn-sm btn-select-flight" data-flight-id="' + f.id + '" data-cabin="' + cabin + '" data-price="' + price + '">Select</button>',
+          '    </div>',
+          '  </div>',
+          '</div>'
+        ].join('\n');
+      }).join('\n');
+
+      attachFlightHandlers(cabin);
+    }
+
+    function attachFlightHandlers(cabin) {
+      // Select flight
+      document.querySelectorAll('.btn-select-flight').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var fare = parseFloat(this.dataset.price);
+          window.amplitude.track('Flight Selected', {
+            flight_id:   this.dataset.flightId,
+            cabin_class: this.dataset.cabin,
+            base_fare:   fare,
+            total_fare:  fare
+          });
+          var current = window.BA.getBooking();
+          window.BA.setBooking(Object.assign(current, {
+            flightId: this.dataset.flightId,
+            cabin:    this.dataset.cabin,
+            baseFare: fare
+          }));
+          window.location.href = 'passengers.html';
+        });
+      });
+
+      // Save flight
+      document.querySelectorAll('.btn-save').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          window.amplitude.track('Flight Saved', {
+            flight_id:   this.dataset.flightId,
+            cabin_class: this.dataset.cabin,
+            base_fare:   parseFloat(this.dataset.price)
+          });
+          this.classList.toggle('saved');
+          this.textContent = this.classList.contains('saved') ? '♥' : '♡';
+        });
+      });
+    }
+
+    // ── Cabin tabs ─────────────────────────────────────────────────
+    document.querySelectorAll('.cabin-tab').forEach(function (tab) {
+      if (tab.dataset.cabin === activeCabin) {
+        document.querySelectorAll('.cabin-tab').forEach(function (t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+      }
+      tab.addEventListener('click', function () {
+        document.querySelectorAll('.cabin-tab').forEach(function (t) { t.classList.remove('active'); });
+        this.classList.add('active');
+        activeCabin = this.dataset.cabin;
+        window.amplitude.track('Fare Class Browsed', {
+          cabin_class_name: this.dataset.cabin,
+          flights_shown:    FLIGHTS.length
+        });
+        renderFlights(activeCabin);
+      });
+    });
+
+    // Initial render
+    renderFlights(activeCabin);
+
+    // ── Upgrade banner ─────────────────────────────────────────────
+    document.getElementById('upgradeBanner').addEventListener('click', function () {
+      window.amplitude.track('Upgrade Offer Clicked', {
+        offer_type:    'bundle',
+        discount_pct:  0.10,
+        saving_amount: 50
+      });
+      // Switch to Business tab
+      document.querySelectorAll('.cabin-tab').forEach(function (t) {
+        t.classList.toggle('active', t.dataset.cabin === 'Business');
+      });
+      activeCabin = 'Business';
+      renderFlights('Business');
+    });
+
+    // ── Reviews ────────────────────────────────────────────────────
+    document.getElementById('reviewList').innerHTML = REVIEWS.map(function (r) {
+      var stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+      return [
+        '<div class="review-card">',
+        '  <div class="review-header">',
+        '    <div>',
+        '      <span class="review-stars">' + stars + '</span>',
+        '      <strong style="margin-left:0.5rem; font-size:0.9rem;">' + r.summary + '</strong>',
+        '    </div>',
+        '    <span class="review-author">' + r.author + '</span>',
+        '  </div>',
+        '  <button class="review-expand" data-rating="' + r.rating + '">Read review ▼</button>',
+        '  <p class="review-body">' + r.body + '</p>',
+        '</div>'
+      ].join('\n');
+    }).join('\n');
+
+    document.querySelectorAll('.review-expand').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        window.amplitude.track('Customer Review Read', {
+          review_rating: parseFloat(this.dataset.rating)
+        });
+        var body = this.nextElementSibling;
+        var isOpen = body.style.display === 'block';
+        body.style.display = isOpen ? 'none' : 'block';
+        this.textContent = isOpen ? 'Read review ▼' : 'Hide review ▲';
+      });
+    });
+  </script>
+</body>
+</html>

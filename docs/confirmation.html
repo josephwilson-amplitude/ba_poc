@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>British Airways — Booking Confirmed</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.js"></script>
+  <script src="https://cdn.amplitude.com/script/f70ef2dbfa2b6bfc6316397d090f6b16.engagement.js"></script>
+  <script src="assets/js/amplitude.js"></script>
+</head>
+<body>
+
+  <div id="nav-root"></div>
+
+  <main class="page-wrap">
+
+    <!-- Confirmation hero -->
+    <div class="confirmation-hero">
+      <div class="confirmation-hero__check">✅</div>
+      <div class="confirmation-hero__title">Booking confirmed!</div>
+      <p style="color:rgba(255,255,255,0.8); margin-bottom:0.75rem;">Your booking reference is</p>
+      <div class="confirmation-hero__ref" id="bookingRef">BA_XXXXXXX</div>
+      <p class="confirmation-hero__sub">A confirmation email has been sent to your registered address. Please save your booking reference.</p>
+    </div>
+
+    <div class="sidebar-layout">
+
+      <!-- Itinerary -->
+      <div>
+        <!-- Flight details -->
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div class="card-header" style="display:flex; align-items:center; gap:0.75rem;">
+            <span style="font-size:1.25rem;">✈️</span>
+            <h3 style="color:var(--ba-navy);">Your itinerary</h3>
+          </div>
+          <div class="card-body">
+            <div style="display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:1rem; margin-bottom:1.5rem;">
+              <div>
+                <div style="font-size:2.5rem; font-weight:900; color:var(--ba-navy); letter-spacing:-0.02em;">LHR</div>
+                <div style="font-size:0.875rem; color:var(--ba-grey-dark);">London Heathrow</div>
+                <div style="font-size:1.1rem; font-weight:700; color:var(--ba-text); margin-top:0.3rem;" id="confDep">09:15</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="color:var(--ba-grey); font-size:0.75rem; margin-bottom:0.3rem;" id="confDuration">8h 45m</div>
+                <div style="display:flex; align-items:center; gap:0; color:var(--ba-grey);">
+                  <div style="height:1px; width:40px; background:var(--ba-grey-light);"></div>
+                  <div style="font-size:1.2rem;">✈</div>
+                  <div style="height:1px; width:40px; background:var(--ba-grey-light);"></div>
+                </div>
+                <div style="font-size:0.7rem; color:var(--ba-grey); margin-top:0.3rem;">Non-stop</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:2.5rem; font-weight:900; color:var(--ba-navy); letter-spacing:-0.02em;" id="confDest">JFK</div>
+                <div style="font-size:0.875rem; color:var(--ba-grey-dark);">John F. Kennedy International</div>
+                <div style="font-size:1.1rem; font-weight:700; color:var(--ba-text); margin-top:0.3rem;" id="confArr">12:00</div>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; background:var(--ba-off-white); border-radius:var(--radius-sm); padding:1rem;">
+              <div>
+                <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--ba-grey); font-weight:700; margin-bottom:0.25rem;">Flight</div>
+                <div style="font-weight:700; color:var(--ba-navy);" id="confFlight">BA0117</div>
+              </div>
+              <div>
+                <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--ba-grey); font-weight:700; margin-bottom:0.25rem;">Cabin</div>
+                <div style="font-weight:700; color:var(--ba-navy);" id="confCabin">Economy</div>
+              </div>
+              <div>
+                <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--ba-grey); font-weight:700; margin-bottom:0.25rem;">Seat</div>
+                <div style="font-weight:700; color:var(--ba-navy);" id="confSeat">TBC at check-in</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- What happens next -->
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div class="card-header">
+            <h3 style="color:var(--ba-navy);">What happens next</h3>
+          </div>
+          <div class="card-body">
+            <div style="display:flex; flex-direction:column; gap:1.25rem;">
+              <div style="display:flex; gap:1rem; align-items:flex-start;">
+                <div style="background:var(--ba-blue); color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; flex-shrink:0;">1</div>
+                <div>
+                  <div style="font-weight:700; color:var(--ba-navy); margin-bottom:0.2rem;">Check your email</div>
+                  <div style="font-size:0.875rem; color:var(--ba-grey-dark);">Your booking confirmation and e-ticket will arrive within a few minutes.</div>
+                </div>
+              </div>
+              <div style="display:flex; gap:1rem; align-items:flex-start;">
+                <div style="background:var(--ba-blue); color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; flex-shrink:0;">2</div>
+                <div>
+                  <div style="font-weight:700; color:var(--ba-navy); margin-bottom:0.2rem;">Online check-in opens 24 hours before departure</div>
+                  <div style="font-size:0.875rem; color:var(--ba-grey-dark);">Check in online and choose your seat free of charge at check-in.</div>
+                </div>
+              </div>
+              <div style="display:flex; gap:1rem; align-items:flex-start;">
+                <div style="background:var(--ba-blue); color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; flex-shrink:0;">3</div>
+                <div>
+                  <div style="font-weight:700; color:var(--ba-navy); margin-bottom:0.2rem;">Download the BA app</div>
+                  <div style="font-size:0.875rem; color:var(--ba-grey-dark);">Manage your booking, view your boarding pass and track your Avios in one place.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+          <button class="btn btn-primary btn-lg" id="downloadBoardingPass">
+            📄 Download boarding pass
+          </button>
+          <a href="index.html" class="btn btn-outline btn-lg">Book another flight</a>
+        </div>
+      </div>
+
+      <!-- Price summary sidebar -->
+      <div class="sidebar">
+        <div class="booking-summary">
+          <div class="booking-summary__header">
+            <h3>Payment summary</h3>
+          </div>
+          <div class="booking-summary__body">
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Base fare</span>
+              <span class="booking-summary__value" id="summaryFare">£349</span>
+            </div>
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Seat fee</span>
+              <span class="booking-summary__value" id="summarySeatFee">—</span>
+            </div>
+            <div class="booking-summary__row">
+              <span class="booking-summary__label">Taxes &amp; charges</span>
+              <span class="booking-summary__value">£25</span>
+            </div>
+            <div class="booking-summary__total">
+              <span class="booking-summary__total-label">Total paid</span>
+              <span class="booking-summary__total-amount" id="summaryTotal">£374</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Avios earned -->
+        <div style="background:linear-gradient(135deg,var(--ba-navy),var(--ba-dark-blue)); border-radius:var(--radius); padding:1.25rem; margin-top:1rem; color:white;">
+          <div style="color:var(--ba-gold); font-weight:700; font-size:1rem; margin-bottom:0.35rem;">✨ Avios earned</div>
+          <div style="font-size:2rem; font-weight:800;" id="aviosEarned">3,490</div>
+          <div style="font-size:0.8rem; color:rgba(255,255,255,0.7); margin-top:0.25rem;">Credited to your Executive Club account within 7 days.</div>
+        </div>
+
+        <!-- Upsell -->
+        <div class="card" style="margin-top:1rem;">
+          <div class="card-body">
+            <h3 style="color:var(--ba-navy); margin-bottom:0.5rem; font-size:0.95rem;">Complete your trip</h3>
+            <div style="display:flex; flex-direction:column; gap:0.6rem;">
+              <div style="display:flex; align-items:center; justify-content:space-between; font-size:0.875rem; padding:0.5rem 0; border-bottom:1px solid var(--ba-grey-light);">
+                <span>🏨 Hotel in New York</span>
+                <a href="#" class="btn btn-outline btn-sm">Search</a>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between; font-size:0.875rem; padding:0.5rem 0; border-bottom:1px solid var(--ba-grey-light);">
+                <span>🚗 Car hire at JFK</span>
+                <a href="#" class="btn btn-outline btn-sm">Search</a>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between; font-size:0.875rem; padding:0.5rem 0;">
+                <span>🛡️ Travel insurance</span>
+                <a href="#" class="btn btn-outline btn-sm">Get quote</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 British Airways Plc. This is a demo site built for Amplitude analytics demonstration purposes.</p>
+  </footer>
+
+  <script src="assets/js/nav.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      var booking = window.BA.getBooking();
+      var stored  = localStorage.getItem('ba_demo_user');
+      var isFirst = !stored || !JSON.parse(stored).hasBooked;
+
+      // Generate booking ref
+      var ref = 'BA_' + Date.now();
+      document.getElementById('bookingRef').textContent = ref;
+
+      // Fire Booking Confirmed
+      window.amplitude.track('Booking Confirmed', {
+        booking_reference: ref,
+        total_payable:     booking.totalPayable || 374,
+        is_first_booking:  isFirst,
+        flight_id:         booking.flightId    || 'BA0117',
+        cabin_class:       booking.cabin       || 'Economy'
+      });
+
+      // Mark as booked
+      if (stored) {
+        try {
+          var u = JSON.parse(stored);
+          u.hasBooked = true;
+          localStorage.setItem('ba_demo_user', JSON.stringify(u));
+        } catch (e) { /* ignore */ }
+      }
+
+      // Populate itinerary from booking state
+      var FLIGHT_MAP = {
+        'BA0117': { dep: '09:15', arr: '12:00', dest: 'JFK', duration: '8h 45m' },
+        'BA0249': { dep: '11:30', arr: '14:20', dest: 'JFK', duration: '8h 50m' },
+        'BA0007': { dep: '14:45', arr: '01:05', dest: 'DXB', duration: '7h 20m' },
+        'BA0303': { dep: '21:10', arr: '06:15', dest: 'SYD', duration: '22h 05m' },
+        'BA0271': { dep: '07:00', arr: '09:20', dest: 'CDG', duration: '1h 20m' },
+        'BA0069': { dep: '15:20', arr: '18:45', dest: 'LAX', duration: '11h 25m' }
+      };
+
+      var fData = FLIGHT_MAP[booking.flightId] || FLIGHT_MAP['BA0117'];
+      document.getElementById('confDest').textContent     = fData.dest;
+      document.getElementById('confDep').textContent      = fData.dep;
+      document.getElementById('confArr').textContent      = fData.arr;
+      document.getElementById('confDuration').textContent = fData.duration;
+      document.getElementById('confFlight').textContent   = booking.flightId || 'BA0117';
+      document.getElementById('confCabin').textContent    = booking.cabin    || 'Economy';
+      if (booking.seat) document.getElementById('confSeat').textContent = booking.seat;
+
+      // Payment summary
+      if (booking.baseFare) document.getElementById('summaryFare').textContent = '£' + booking.baseFare;
+      if (booking.seatFee != null) document.getElementById('summarySeatFee').textContent = booking.seatFee === 0 ? 'Free' : '£' + booking.seatFee;
+      if (booking.totalPayable) document.getElementById('summaryTotal').textContent = '£' + booking.totalPayable;
+
+      // Avios estimate
+      var avios = Math.round((booking.baseFare || 349) * 10);
+      document.getElementById('aviosEarned').textContent = avios.toLocaleString();
+    });
+
+    // Mock boarding pass download
+    document.getElementById('downloadBoardingPass').addEventListener('click', function () {
+      this.textContent = '✅ Boarding pass saved';
+      this.disabled = true;
+      this.style.opacity = '0.7';
+    });
+  </script>
+</body>
+</html>
