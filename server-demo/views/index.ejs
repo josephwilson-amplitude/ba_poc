@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>British Airways — Book Flights (Server-side Demo)</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/server.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Analytics + Session Replay (browser SDK — same as static site) -->
+  <script src="https://cdn.amplitude.com/libs/analytics-browser-2.11.1-min.js.gz"></script>
+  <script src="https://cdn.amplitude.com/libs/plugin-session-replay-browser-1.6.22-min.js.gz"></script>
+
+  <!-- Server-baked experiment data — no client-side SDK call needed -->
+  <script>
+    window.BA_SERVER = <%- JSON.stringify(serverData) %>;
+  </script>
+
+  <!-- Amplitude init -->
+  <script src="assets/js/amplitude.js"></script>
+</head>
+<body>
+
+  <div id="nav-root"></div>
+
+  <!-- Server-side mode banner -->
+  <div class="ss-mode-bar">
+    <span class="ss-mode-bar__label">
+      <i class="fa-solid fa-server"></i>
+      Server-side demo
+    </span>
+    <span class="ss-mode-bar__mode ss-mode-bar__mode--<%= serverData.mode %>">
+      <%= serverData.mode === 'local' ? 'Local evaluation' : 'Remote evaluation' %>
+    </span>
+    <span class="ss-mode-bar__time">
+      <% if (serverData.evalTimeUs !== null) { %>
+        <%= serverData.mode === 'local'
+              ? serverData.evalTimeUs + ' μs'
+              : serverData.evalTimeMs + ' ms' %> &middot;
+        <%= serverData.networkCalls %> network call<%= serverData.networkCalls === 1 ? '' : 's' %>
+      <% } %>
+    </span>
+    <span class="ss-mode-bar__sep"></span>
+    <a href="/?mode=local<%= serverData.previewOverride ? '&variant=' + serverData.previewOverride : '' %>"
+       class="ss-mode-bar__btn<%= serverData.mode === 'local' ? ' active' : '' %>">
+      <i class="fa-solid fa-microchip"></i> Local
+    </a>
+    <a href="/?mode=remote<%= serverData.previewOverride ? '&variant=' + serverData.previewOverride : '' %>"
+       class="ss-mode-bar__btn<%= serverData.mode === 'remote' ? ' active' : '' %>">
+      <i class="fa-solid fa-cloud"></i> Remote
+    </a>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__content">
+      <p class="hero__tagline">The world's favourite airline</p>
+      <h1 class="hero__title">Fly the flag</h1>
+      <p class="hero__subtitle">Discover the world with British Airways. Award-winning service, hundreds of destinations.</p>
+    </div>
+
+    <!-- Control search card -->
+    <div id="search-control" class="search-card" style="margin-top:2rem; position:relative; z-index:2;<%= serverData.variant === 'treatment' ? ' display:none;' : '' %>">
+      <div class="search-tabs">
+        <button class="search-tab active" type="button">Return</button>
+        <button class="search-tab" type="button">One way</button>
+        <button class="search-tab" type="button">Multi-city</button>
+      </div>
+      <form id="searchForm" autocomplete="off">
+        <div class="search-grid">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">From</label>
+            <input type="text" id="searchFrom" class="form-control" value="London (LHR)" placeholder="City or airport" />
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">To</label>
+            <div style="position:relative;">
+              <input type="text" id="searchTo" class="form-control" placeholder="City or airport" />
+              <div id="autocomplete-dropdown" style="display:none; position:absolute; top:100%; left:0; right:0; background:white; border:1.5px solid #E8EBF0; border-radius:4px; z-index:50; box-shadow:0 4px 12px rgba(0,0,0,0.12); max-height:200px; overflow-y:auto;"></div>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Depart</label>
+            <input type="date" id="searchDepart" class="form-control" />
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Return</label>
+            <input type="date" id="searchReturn" class="form-control" />
+          </div>
+          <div></div>
+        </div>
+        <div class="search-grid-row2" style="margin-top:1rem;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Passengers</label>
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <button type="button" id="passDec" style="width:36px;height:36px;border:1.5px solid #E8EBF0;border-radius:4px;background:white;font-size:1.2rem;cursor:pointer;font-family:inherit;">&#8722;</button>
+              <input type="number" id="searchPassengers" class="form-control" value="1" min="1" max="9" style="text-align:center; width:56px; flex-shrink:0;" readonly />
+              <button type="button" id="passInc" style="width:36px;height:36px;border:1.5px solid #E8EBF0;border-radius:4px;background:white;font-size:1.2rem;cursor:pointer;font-family:inherit;">+</button>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Cabin class</label>
+            <select id="searchCabin" class="form-control">
+              <option value="Economy">Economy</option>
+              <option value="Premium Economy">Premium Economy</option>
+              <option value="Business">Business (Club World)</option>
+              <option value="First">First</option>
+            </select>
+          </div>
+          <div style="display:flex; align-items:flex-end;">
+            <button type="submit" class="btn btn-primary btn-lg btn-full">Search flights</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Treatment search card — server-baked visibility -->
+    <div id="search-treatment" class="search-card--treatment" style="margin-top:2rem; position:relative; z-index:2;<%= serverData.variant !== 'treatment' ? ' display:none;' : '' %>">
+      <p class="search-treatment__eyebrow"><i class="fa-solid fa-bolt"></i> New Search Experience</p>
+      <h2 class="search-treatment__heading">Where would you like to fly?</h2>
+      <form id="searchFormTreatment" autocomplete="off">
+        <div class="search-treatment__bar">
+          <div class="search-treatment__field">
+            <label class="search-treatment__label">From</label>
+            <input type="text" id="searchFromTreatment" value="London (LHR)" />
+          </div>
+          <div class="search-treatment__field" style="flex:1.4;">
+            <label class="search-treatment__label">To</label>
+            <input type="text" id="searchToTreatment" placeholder="Where to?" />
+          </div>
+          <div class="search-treatment__field">
+            <label class="search-treatment__label">Depart</label>
+            <input type="date" id="searchDepartTreatment" />
+          </div>
+          <div class="search-treatment__field">
+            <label class="search-treatment__label">Return</label>
+            <input type="date" id="searchReturnTreatment" />
+          </div>
+          <div class="search-treatment__field">
+            <label class="search-treatment__label">Cabin</label>
+            <select id="searchCabinTreatment">
+              <option value="Economy">Economy</option>
+              <option value="Premium Economy">Premium Economy</option>
+              <option value="Business">Business</option>
+              <option value="First">First</option>
+            </select>
+          </div>
+          <button type="submit" class="search-treatment__cta">
+            Search flights <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </form>
+      <div class="search-treatment__quick">
+        <span>Popular:</span>
+        <button class="exp-dest-chip" data-dest="New York (JFK)" type="button">New York</button>
+        <button class="exp-dest-chip" data-dest="Dubai (DXB)" type="button">Dubai</button>
+        <button class="exp-dest-chip" data-dest="Sydney (SYD)" type="button">Sydney</button>
+        <button class="exp-dest-chip" data-dest="Paris (CDG)" type="button">Paris</button>
+        <button class="exp-dest-chip" data-dest="Singapore (SIN)" type="button">Singapore</button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Main content -->
+  <main class="page-wrap">
+
+    <section class="destinations-section">
+      <h2>Popular destinations</h2>
+      <div class="destinations-grid">
+        <div class="dest-card" data-dest="New York" data-code="JFK">
+          <div class="dest-card__img"><img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=600&h=280&q=80" alt="New York City skyline" /></div>
+          <div class="dest-card__body">
+            <div class="dest-card__city">New York (JFK)</div>
+            <div class="dest-card__from">From</div>
+            <div class="dest-card__price">£349</div>
+          </div>
+        </div>
+        <div class="dest-card" data-dest="Dubai" data-code="DXB">
+          <div class="dest-card__img"><img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=600&h=280&q=80" alt="Dubai skyline" /></div>
+          <div class="dest-card__body">
+            <div class="dest-card__city">Dubai (DXB)</div>
+            <div class="dest-card__from">From</div>
+            <div class="dest-card__price">£289</div>
+          </div>
+        </div>
+        <div class="dest-card" data-dest="Sydney" data-code="SYD">
+          <div class="dest-card__img"><img src="https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=600&h=280&q=80" alt="Sydney Opera House" /></div>
+          <div class="dest-card__body">
+            <div class="dest-card__city">Sydney (SYD)</div>
+            <div class="dest-card__from">From</div>
+            <div class="dest-card__price">£899</div>
+          </div>
+        </div>
+        <div class="dest-card" data-dest="Paris" data-code="CDG">
+          <div class="dest-card__img"><img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=600&h=280&q=80" alt="Paris Eiffel Tower" /></div>
+          <div class="dest-card__body">
+            <div class="dest-card__city">Paris (CDG)</div>
+            <div class="dest-card__from">From</div>
+            <div class="dest-card__price">£89</div>
+          </div>
+        </div>
+        <div class="dest-card" data-dest="Los Angeles" data-code="LAX">
+          <div class="dest-card__img"><img src="https://images.unsplash.com/photo-1420593248178-d88870618ca0?auto=format&fit=crop&w=600&h=280&q=80" alt="Los Angeles" /></div>
+          <div class="dest-card__body">
+            <div class="dest-card__city">Los Angeles (LAX)</div>
+            <div class="dest-card__from">From</div>
+            <div class="dest-card__price">£549</div>
+          </div>
+        </div>
+        <div class="dest-card" data-dest="Chicago" data-code="ORD">
+          <div class="dest-card__img"><img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=600&h=280&q=80" alt="Chicago skyline" /></div>
+          <div class="dest-card__body">
+            <div class="dest-card__city">Chicago (ORD)</div>
+            <div class="dest-card__from">From</div>
+            <div class="dest-card__price">£399</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="promoBanner" class="promo-banner">
+      <div class="promo-banner__content">
+        <h2>Winter Sale — Save up to 15%</h2>
+        <p>Book by 31 January and save on selected long-haul routes. Earn double Avios on every booking this month.</p>
+      </div>
+      <a href="#" class="btn btn-gold btn-lg" style="white-space:nowrap;">View all offers</a>
+    </div>
+
+    <section style="margin-top:3rem; display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+      <div class="card">
+        <div class="card-body">
+          <div style="font-size:2rem; margin-bottom:0.75rem; color:var(--ba-blue);"><i class="fa-solid fa-star"></i></div>
+          <h3 style="color:var(--ba-navy); margin-bottom:0.5rem;">Executive Club</h3>
+          <p class="text-muted" style="margin-bottom:1rem;">Earn Avios every time you fly, spend or shop. Redeem for flights, upgrades and more.</p>
+          <a href="#" class="btn btn-outline">Join free</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <div style="font-size:2rem; margin-bottom:0.75rem; color:var(--ba-blue);"><i class="fa-solid fa-briefcase"></i></div>
+          <h3 style="color:var(--ba-navy); margin-bottom:0.5rem;">Business Travel</h3>
+          <p class="text-muted" style="margin-bottom:1rem;">Tailored solutions for corporate travel. Dedicated account managers and flexible booking terms.</p>
+          <a href="#" class="btn btn-outline">Learn more</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 British Airways Plc. Registered in England. This is a demo site built for Amplitude analytics demonstration purposes.</p>
+    <p style="margin-top:0.5rem;"><a href="#">Privacy policy</a> &middot; <a href="#">Cookie policy</a> &middot; <a href="#">Terms &amp; conditions</a></p>
+  </footer>
+
+  <script src="assets/js/nav.js"></script>
+
+  <script>
+    // Dates
+    (function () {
+      var today = new Date();
+      var dep   = new Date(today); dep.setDate(today.getDate() + 7);
+      var ret   = new Date(today); ret.setDate(today.getDate() + 14);
+      function fmt(d) { return d.toISOString().split('T')[0]; }
+      var dEl = document.getElementById('searchDepart');
+      var rEl = document.getElementById('searchReturn');
+      var dElT = document.getElementById('searchDepartTreatment');
+      var rElT = document.getElementById('searchReturnTreatment');
+      if (dEl)  dEl.value  = fmt(dep);
+      if (rEl)  rEl.value  = fmt(ret);
+      if (dElT) dElT.value = fmt(dep);
+      if (rElT) rElT.value = fmt(ret);
+    })();
+
+    // Passenger stepper
+    document.getElementById('passDec').addEventListener('click', function () {
+      var inp = document.getElementById('searchPassengers');
+      if (parseInt(inp.value) > 1) inp.value = parseInt(inp.value) - 1;
+    });
+    document.getElementById('passInc').addEventListener('click', function () {
+      var inp = document.getElementById('searchPassengers');
+      if (parseInt(inp.value) < 9) inp.value = parseInt(inp.value) + 1;
+    });
+
+    // Destination autocomplete
+    var DESTINATIONS = [
+      { label: 'New York (JFK)' }, { label: 'Dubai (DXB)' }, { label: 'Sydney (SYD)' },
+      { label: 'Paris (CDG)' }, { label: 'Los Angeles (LAX)' }, { label: 'Chicago (ORD)' },
+      { label: 'Tokyo (HND)' }, { label: 'Singapore (SIN)' }, { label: 'Cape Town (CPT)' }, { label: 'Miami (MIA)' }
+    ];
+    var searchTo = document.getElementById('searchTo');
+    var dropdown = document.getElementById('autocomplete-dropdown');
+    searchTo.addEventListener('input', function () {
+      var val = this.value;
+      if (val.length < 2) { dropdown.style.display = 'none'; return; }
+      var matches = DESTINATIONS.filter(function (d) { return d.label.toLowerCase().includes(val.toLowerCase()); });
+      if (!matches.length) { dropdown.style.display = 'none'; return; }
+      dropdown.innerHTML = matches.map(function (d) {
+        return '<div style="padding:0.6rem 0.9rem; cursor:pointer; font-size:0.875rem; border-bottom:1px solid #E8EBF0;" data-value="' + d.label + '">' + d.label + '</div>';
+      }).join('');
+      dropdown.style.display = 'block';
+    });
+    dropdown.addEventListener('click', function (e) {
+      var item = e.target.closest('[data-value]');
+      if (item) { searchTo.value = item.dataset.value; dropdown.style.display = 'none'; }
+    });
+    document.addEventListener('click', function (e) {
+      if (!searchTo.contains(e.target) && !dropdown.contains(e.target)) dropdown.style.display = 'none';
+    });
+
+    // Dest card quick-fill
+    document.querySelectorAll('.dest-card').forEach(function (card) {
+      card.addEventListener('click', function () {
+        var dest = this.dataset.dest; var code = this.dataset.code;
+        searchTo.value = dest + ' (' + code + ')';
+        document.getElementById('searchForm').scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Search submit — control form
+    document.getElementById('searchForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var destination = searchTo.value;
+      var cabin = document.getElementById('searchCabin').value;
+      var passengers = parseInt(document.getElementById('searchPassengers').value) || 1;
+      if (!destination) return;
+      window.amplitude.track('Flight Search Completed', {
+        destination_query: destination,
+        flights_returned: Math.floor(Math.random() * 15) + 5,
+        is_returning_customer: !!localStorage.getItem('ba_demo_user'),
+        cabin_class: cabin,
+        search_ui_variant: 'control'
+      });
+      window.BA.setBooking({ destination: destination, cabin: cabin, passengers: passengers });
+    });
+
+    // Search submit — treatment form
+    var treatmentForm = document.getElementById('searchFormTreatment');
+    if (treatmentForm) {
+      treatmentForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var destination = (document.getElementById('searchToTreatment').value || '').trim();
+        var cabin = document.getElementById('searchCabinTreatment').value;
+        if (!destination) return;
+        window.amplitude.track('Flight Search Completed', {
+          destination_query: destination,
+          flights_returned: Math.floor(Math.random() * 15) + 5,
+          is_returning_customer: !!localStorage.getItem('ba_demo_user'),
+          cabin_class: cabin,
+          search_ui_variant: 'treatment'
+        });
+        window.BA.setBooking({ destination: destination, cabin: cabin, passengers: 1 });
+      });
+    }
+
+    // Dest chips
+    document.querySelectorAll('.exp-dest-chip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        var destInput = document.getElementById('searchToTreatment');
+        if (destInput) destInput.value = chip.dataset.dest;
+      });
+    });
+
+    // Search tab toggle
+    document.querySelectorAll('.search-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        document.querySelectorAll('.search-tab').forEach(function (t) { t.classList.remove('active'); });
+        this.classList.add('active');
+        var returnField = document.getElementById('searchReturn').closest('.form-group');
+        if (returnField) returnField.style.display = this.textContent.trim() === 'One way' ? 'none' : '';
+      });
+    });
+
+    // Promo banner impression
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          window.amplitude.track('Sale Promotion Viewed', { offer_type: 'avios_bonus', discount_pct: 0.15 });
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+    observer.observe(document.getElementById('promoBanner'));
+  </script>
+
+  <!-- Overlay panel + $exposure tracking -->
+  <script src="assets/js/overlay.js"></script>
+
+  <!-- Flask trigger -->
+  <button id="exp-trigger" class="exp-trigger" title="View feature experiment">
+    <i class="fa-solid fa-flask"></i>
+  </button>
+
+  <!-- Backdrop -->
+  <div id="exp-backdrop" class="exp-backdrop" style="display:none;"></div>
+
+  <!-- Slide-out panel -->
+  <aside id="exp-panel" class="exp-panel" aria-label="Feature experiment panel">
+
+    <div class="exp-panel__header">
+      <div>
+        <div class="exp-panel__title">
+          <i class="fa-solid fa-flask"></i> Feature Experiment
+        </div>
+        <code class="exp-panel__flag-key">new-search-experience</code>
+      </div>
+      <button id="exp-close" class="exp-panel__close" aria-label="Close panel">&#x2715;</button>
+    </div>
+
+    <div class="exp-panel__body">
+
+      <!-- Variant status -->
+      <div class="exp-panel__variant-row">
+        <span class="exp-panel__variant-label">Variant assigned</span>
+        <span id="exp-badge" class="exp-badge exp-badge--<%= serverData.variant %>"><%= serverData.variant.toUpperCase() %></span>
+        <span id="exp-status" class="exp-status exp-status--live">Evaluated server-side</span>
+      </div>
+
+      <!-- Eval performance -->
+      <div class="exp-panel__section">
+        <div class="exp-panel__section-title">Evaluation performance</div>
+        <div class="ss-metrics">
+          <div class="ss-metrics__row">
+            <span class="ss-metrics__label">Mode</span>
+            <span class="ss-metrics__value ss-metrics__value--<%= serverData.mode %>">
+              <%= serverData.mode === 'local' ? 'Local (in-process)' : 'Remote (Amplitude API)' %>
+            </span>
+          </div>
+          <div class="ss-metrics__row">
+            <span class="ss-metrics__label">Eval time</span>
+            <span class="ss-metrics__value" id="ss-eval-time">
+              <% if (serverData.evalTimeUs !== null) { %>
+                <%= serverData.mode === 'local'
+                      ? serverData.evalTimeUs + ' μs'
+                      : serverData.evalTimeMs + ' ms' %>
+              <% } else { %>
+                —
+              <% } %>
+            </span>
+          </div>
+          <div class="ss-metrics__row">
+            <span class="ss-metrics__label">Network calls</span>
+            <span class="ss-metrics__value"><%= serverData.networkCalls %></span>
+          </div>
+          <div class="ss-metrics__row">
+            <span class="ss-metrics__label">User ID</span>
+            <span class="ss-metrics__value ss-metrics__value--mono"><%= serverData.userId %></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- How it works -->
+      <div class="exp-panel__section">
+        <div class="exp-panel__section-title">How it works</div>
+        <% if (serverData.mode === 'local') { %>
+        <p class="exp-panel__desc">
+          <strong>Local evaluation</strong> — the server downloaded flag rules from Amplitude once at startup (via <code>client.start()</code>). Every request evaluates the flag <em>in-process</em> using those cached rules. Zero network calls per request; evaluation completes in microseconds. The correct HTML variant is sent from the very first byte.
+        </p>
+        <pre class="exp-code-block"><span class="exp-c-comment">// Server startup — fetch rules once</span>
+<span class="exp-c-kw">const</span> client = Experiment.initializeLocal(<span class="exp-c-str">'server-...'</span>);
+<span class="exp-c-kw">await</span> client.start();
+
+<span class="exp-c-comment">// Per request — synchronous, ~microseconds</span>
+<span class="exp-c-kw">const</span> variants = client.evaluate(user, [<span class="exp-c-str">'new-search-experience'</span>]);
+<span class="exp-c-kw">const</span> variant  = variants[<span class="exp-c-str">'new-search-experience'</span>]?.value ?? <span class="exp-c-str">'control'</span>;
+res.render(<span class="exp-c-str">'index'</span>, { variant });</pre>
+        <% } else { %>
+        <p class="exp-panel__desc">
+          <strong>Remote evaluation</strong> — for every request the server calls Amplitude's evaluation API with the user context and waits for the response (~10–50 ms). Amplitude evaluates targeting rules centrally and returns the assigned variant. The correct HTML is still sent in the initial response, but each page load incurs a network round-trip.
+        </p>
+        <pre class="exp-code-block"><span class="exp-c-comment">// Per request — async, ~10–50 ms</span>
+<span class="exp-c-kw">const</span> client   = Experiment.initialize(<span class="exp-c-str">'server-...'</span>);
+<span class="exp-c-kw">const</span> variants = <span class="exp-c-kw">await</span> client.fetch(user);
+<span class="exp-c-kw">const</span> variant  = variants.variant(<span class="exp-c-str">'new-search-experience'</span>)?.value ?? <span class="exp-c-str">'control'</span>;
+res.render(<span class="exp-c-str">'index'</span>, { variant });</pre>
+        <% } %>
+      </div>
+
+      <!-- Amplitude response -->
+      <div class="exp-panel__section">
+        <div class="exp-panel__section-title">Flag response</div>
+        <pre id="exp-json" class="exp-json-block"><%= JSON.stringify(serverData.rawResponse, null, 2) %></pre>
+      </div>
+
+      <!-- Preview override -->
+      <div class="exp-panel__section">
+        <div class="exp-panel__section-title">Preview variant</div>
+        <p class="exp-panel__desc exp-panel__desc--sm">
+          Reloads the page with a server-side override — shows exactly what the user would see for each variant.
+        </p>
+        <div class="exp-preview-btns">
+          <a class="exp-preview-btn<%= !serverData.previewOverride ? ' active' : '' %>"
+             href="/?mode=<%= serverData.mode %>">Auto</a>
+          <a class="exp-preview-btn<%= serverData.previewOverride === 'control' ? ' active' : '' %>"
+             href="/?mode=<%= serverData.mode %>&variant=control">Control</a>
+          <a class="exp-preview-btn<%= serverData.previewOverride === 'treatment' ? ' active' : '' %>"
+             href="/?mode=<%= serverData.mode %>&variant=treatment">Treatment</a>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
+</body>
+</html>
