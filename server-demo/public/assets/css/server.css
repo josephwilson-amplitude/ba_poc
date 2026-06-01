@@ -104,8 +104,3 @@
   text-decoration: none;
 }
 
-/* HTML proof block — slightly smaller font to fit the snippet */
-.ss-html-proof {
-  font-size: 0.72rem;
-  line-height: 1.6;
-}

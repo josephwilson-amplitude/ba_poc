@@ -153,6 +153,11 @@ async function boot() {
       }
     }
 
+    // Full flag config the server has cached locally for bucketing
+    // localClient.cache holds everything downloaded at start()
+    const cachedFlags = localClient.cache ? localClient.cache.getAllCached() : {};
+    const flagConfig  = cachedFlags[FLAG_KEY] || null;
+
     // Data sent to the template and embedded in window.BA_SERVER
     const serverData = {
       mode,
@@ -163,6 +168,7 @@ async function boot() {
       networkCalls,
       flagKey: FLAG_KEY,
       rawResponse,
+      flagConfig,
       error: evalError,
       previewOverride: previewVariant || null,
       analyticsKey: ANALYTICS_KEY
