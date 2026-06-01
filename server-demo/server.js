@@ -7,7 +7,7 @@ const { Experiment } = require('@amplitude/experiment-node-server');
 
 // ── Config ────────────────────────────────────────────────────────────────────
 const PORT         = 3000;
-const FLAG_KEY     = 'new-search-experience';
+const FLAG_KEY     = 'new-search-experience-server';
 
 // Server-side deployment key — get this from Amplitude:
 // Experiment → Deployments → create a "server" deployment → copy secret key

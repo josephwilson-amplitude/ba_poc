@@ -403,7 +403,7 @@
         <div class="exp-panel__title">
           <i class="fa-solid fa-flask"></i> Feature Experiment
         </div>
-        <code class="exp-panel__flag-key">new-search-experience</code>
+        <code class="exp-panel__flag-key">new-search-experience-server</code>
       </div>
       <button id="exp-close" class="exp-panel__close" aria-label="Close panel">&#x2715;</button>
     </div>
@@ -462,8 +462,8 @@
 <span class="exp-c-kw">await</span> client.start();
 
 <span class="exp-c-comment">// Per request — synchronous, ~microseconds</span>
-<span class="exp-c-kw">const</span> variants = client.evaluate(user, [<span class="exp-c-str">'new-search-experience'</span>]);
-<span class="exp-c-kw">const</span> variant  = variants[<span class="exp-c-str">'new-search-experience'</span>]?.value ?? <span class="exp-c-str">'control'</span>;
+<span class="exp-c-kw">const</span> variants = client.evaluate(user, [<span class="exp-c-str">'new-search-experience-server'</span>]);
+<span class="exp-c-kw">const</span> variant  = variants[<span class="exp-c-str">'new-search-experience-server'</span>]?.value ?? <span class="exp-c-str">'control'</span>;
 res.render(<span class="exp-c-str">'index'</span>, { variant });</pre>
         <% } else { %>
         <p class="exp-panel__desc">
@@ -472,7 +472,7 @@ res.render(<span class="exp-c-str">'index'</span>, { variant });</pre>
         <pre class="exp-code-block"><span class="exp-c-comment">// Per request — async, ~10–50 ms</span>
 <span class="exp-c-kw">const</span> client   = Experiment.initialize(<span class="exp-c-str">'server-...'</span>);
 <span class="exp-c-kw">const</span> variants = <span class="exp-c-kw">await</span> client.fetch(user);
-<span class="exp-c-kw">const</span> variant  = variants.variant(<span class="exp-c-str">'new-search-experience'</span>)?.value ?? <span class="exp-c-str">'control'</span>;
+<span class="exp-c-kw">const</span> variant  = variants.variant(<span class="exp-c-str">'new-search-experience-server'</span>)?.value ?? <span class="exp-c-str">'control'</span>;
 res.render(<span class="exp-c-str">'index'</span>, { variant });</pre>
         <% } %>
       </div>
