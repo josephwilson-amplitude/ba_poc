@@ -477,6 +477,27 @@ res.render(<span class="exp-c-str">'index'</span>, { variant });</pre>
         <% } %>
       </div>
 
+      <!-- Proof it's in the HTML -->
+      <div class="exp-panel__section">
+        <div class="exp-panel__section-title">It&rsquo;s already in the HTML</div>
+        <p class="exp-panel__desc exp-panel__desc--sm">
+          The server wrote the variant decision into the page before sending a single byte. No JS needed to show the right UI &mdash; it&rsquo;s baked in. Right-click &rarr; View Page Source to verify.
+        </p>
+        <pre class="exp-code-block ss-html-proof"><span class="exp-c-comment">&lt;!-- window.BA_SERVER injected by server --&gt;</span>
+<span class="exp-c-kw">&lt;script&gt;</span>
+  window.BA_SERVER = {
+    <span class="exp-c-str">"variant"</span>: <span class="exp-c-str">"<%= serverData.variant %>"</span>,
+    <span class="exp-c-str">"mode"</span>:    <span class="exp-c-str">"<%= serverData.mode %>"</span>
+  };
+<span class="exp-c-kw">&lt;/script&gt;</span>
+
+<span class="exp-c-comment">&lt;!-- Search cards — visibility set by server --&gt;</span>
+<span class="exp-c-kw">&lt;div</span> id=<span class="exp-c-str">"search-control"</span>
+     style=<span class="exp-c-str">"<%= serverData.variant === 'treatment' ? 'display:none' : '' %>"</span><span class="exp-c-kw">&gt;</span>
+<span class="exp-c-kw">&lt;div</span> id=<span class="exp-c-str">"search-treatment"</span>
+     style=<span class="exp-c-str">"<%= serverData.variant !== 'treatment' ? 'display:none' : '' %>"</span><span class="exp-c-kw">&gt;</span></pre>
+      </div>
+
       <!-- Amplitude response -->
       <div class="exp-panel__section">
         <div class="exp-panel__section-title">Flag response</div>

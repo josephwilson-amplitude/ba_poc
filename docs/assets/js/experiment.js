@@ -9,7 +9,9 @@
     rawResponse: null,
     previewOverride: null,
     loaded: false,
-    error: null
+    error: null,
+    fetchMs: null,
+    fetchEndpoint: 'https://api.lab.eu.amplitude.com/sdk/vardata'
   };
 
   // ── Apply variant to DOM ─────────────────────────────────────
@@ -73,6 +75,23 @@
       }
     }
 
+    var fetchEl = document.getElementById('exp-fetch-detail');
+    if (fetchEl) {
+      if (state.fetchMs !== null) {
+        fetchEl.innerHTML =
+          '<span class="exp-fetch-row"><span class="exp-fetch-label">Endpoint</span>' +
+          '<span class="exp-fetch-url">' + state.fetchEndpoint + '</span></span>' +
+          '<span class="exp-fetch-row"><span class="exp-fetch-label">Round-trip</span>' +
+          '<span class="exp-fetch-val">' + state.fetchMs + ' ms</span></span>' +
+          '<span class="exp-fetch-row"><span class="exp-fetch-label">Fires</span>' +
+          '<span class="exp-fetch-val">on every page load</span></span>';
+      } else if (state.error) {
+        fetchEl.textContent = 'Fetch failed — ' + state.error;
+      } else {
+        fetchEl.innerHTML = '<span class="exp-fetch-val" style="color:#64748B;">Fetching…</span>';
+      }
+    }
+
     document.querySelectorAll('.exp-preview-btn').forEach(function (btn) {
       var val    = btn.dataset.variant;
       var active = (val === 'auto' && !state.previewOverride) ||
@@ -95,8 +114,12 @@
       { serverZone: 'EU' }
     );
 
+    var fetchStart = performance.now();
+
     experiment.fetch()
       .then(function () {
+        state.fetchMs = Math.round(performance.now() - fetchStart);
+
         // experiment.variant() automatically fires the $exposure event
         var v         = experiment.variant(FLAG_KEY);
         state.variant = (v && v.value) ? v.value : 'control';
@@ -109,6 +132,7 @@
         updateOverlay();
       })
       .catch(function (err) {
+        state.fetchMs = Math.round(performance.now() - fetchStart);
         console.warn('[BA Experiment] fetch error:', err.message);
         state.error = err.message;
         if (!state.previewOverride) applyVariant('control');

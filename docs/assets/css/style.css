@@ -1378,6 +1378,47 @@ select.form-control { appearance: none; background-image: url("data:image/svg+xm
   white-space: pre;
 }
 
+/* ── Network fetch detail ────────────────────────────────────── */
+.exp-fetch-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 0.82rem;
+}
+
+.exp-fetch-row {
+  display: flex;
+  align-items: baseline;
+  padding: 0.45rem 0.75rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  gap: 0.5rem;
+}
+
+.exp-fetch-row:last-child { border-bottom: none; }
+
+.exp-fetch-label {
+  color: #64748B;
+  font-size: 0.78rem;
+  width: 80px;
+  flex-shrink: 0;
+}
+
+.exp-fetch-url {
+  color: #94A3B8;
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  font-size: 0.72rem;
+  word-break: break-all;
+}
+
+.exp-fetch-val {
+  color: #FCD34D;
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  font-weight: 600;
+}
+
 /* ── Preview buttons ──────────────────────────────────────────── */
 .exp-preview-btns {
   display: flex;

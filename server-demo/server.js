@@ -22,8 +22,9 @@ const ANALYTICS_KEY = 'f70ef2dbfa2b6bfc6316397d090f6b16'; // same as browser
 // Zero network calls per request; evaluation takes ~microseconds.
 //
 const localClient = Experiment.initializeLocal(SERVER_KEY, {
-  serverZone: 'EU',
-  flagConfigPollingIntervalMillis: 30_000  // refresh rules every 30 s
+  serverUrl: 'https://flag.lab.eu.amplitude.com',
+  flagConfigPollingIntervalMillis: 30_000,
+  debug: true
 });
 
 //
@@ -56,6 +57,41 @@ async function boot() {
   app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
   app.use('/assets', express.static(path.join(__dirname, '../docs/assets')));
 
+  // ── Debug route — shows all downloaded flag rules ──────────────────────────
+  app.get('/debug', async (req, res) => {
+    const user = { user_id: 'debug-user' };
+    const all  = await localClient.evaluate(user);
+
+    // Also hit the raw Amplitude flags API to see what's returned for this key
+    let rawApi = null;
+    let rawApiWithMode = null;
+    try {
+      const resp = await fetch('https://flag.lab.eu.amplitude.com/sdk/v2/flags?v=0', {
+        headers: { 'Authorization': `Api-Key ${SERVER_KEY}` }
+      });
+      rawApi = await resp.json();
+    } catch (e) {
+      rawApi = { error: e.message };
+    }
+    try {
+      const resp = await fetch('https://flag.lab.eu.amplitude.com/sdk/v2/flags?v=0&evaluationMode=local', {
+        headers: { 'Authorization': `Api-Key ${SERVER_KEY}` }
+      });
+      rawApiWithMode = await resp.json();
+    } catch (e) {
+      rawApiWithMode = { error: e.message };
+    }
+
+    res.json({
+      downloaded_flags: Object.keys(all),
+      evaluated: all,
+      target_flag: FLAG_KEY,
+      found: !!all[FLAG_KEY],
+      raw_api_no_filter: rawApi,
+      raw_api_with_evaluationMode_local: rawApiWithMode
+    });
+  });
+
   // ── Main route ─────────────────────────────────────────────────────────────
   app.get('/', async (req, res) => {
     // mode: 'local' (default) or 'remote'
@@ -84,10 +120,10 @@ async function boot() {
       networkCalls = 0;
       rawResponse  = { [FLAG_KEY]: { key: previewVariant, value: previewVariant, source: 'preview-override' } };
     } else if (mode === 'local') {
-      // Local evaluation — synchronous, in-process
+      // Local evaluation — in-process against cached flag rules
       const t0 = process.hrtime.bigint();
       try {
-        const variants = localClient.evaluate(user, [FLAG_KEY]);
+        const variants = await localClient.evaluate(user, [FLAG_KEY]);
         const t1 = process.hrtime.bigint();
         evalTimeUs  = Number(t1 - t0) / 1000;   // nanoseconds → microseconds
         networkCalls = 0;
