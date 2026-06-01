@@ -428,18 +428,6 @@
             </span>
           </div>
           <div class="ss-metrics__row">
-            <span class="ss-metrics__label">Eval time</span>
-            <span class="ss-metrics__value" id="ss-eval-time">
-              <% if (serverData.evalTimeUs !== null) { %>
-                <%= serverData.mode === 'local'
-                      ? serverData.evalTimeUs + ' μs'
-                      : serverData.evalTimeMs + ' ms' %>
-              <% } else { %>
-                —
-              <% } %>
-            </span>
-          </div>
-          <div class="ss-metrics__row">
             <span class="ss-metrics__label">Network calls</span>
             <span class="ss-metrics__value"><%= serverData.networkCalls %></span>
           </div>
