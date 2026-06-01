@@ -22,8 +22,8 @@
       <p class="hero__subtitle">Discover the world with British Airways. Award-winning service, hundreds of destinations.</p>
     </div>
 
-    <!-- Search form -->
-    <div class="search-card" style="margin-top:2rem; position:relative; z-index:2;">
+    <!-- Search form — control variant -->
+    <div id="search-control" class="search-card" style="margin-top:2rem; position:relative; z-index:2;">
       <div class="search-tabs">
         <button class="search-tab active" type="button">Return</button>
         <button class="search-tab" type="button">One way</button>
@@ -78,6 +78,53 @@
         </div>
       </form>
     </div>
+
+    <!-- Search form — treatment variant (new search experience) -->
+    <div id="search-treatment" class="search-card--treatment" style="margin-top:2rem; position:relative; z-index:2; display:none;">
+      <p class="search-treatment__eyebrow"><i class="fa-solid fa-bolt"></i> New Search Experience</p>
+      <h2 class="search-treatment__heading">Where would you like to fly?</h2>
+      <form id="searchFormTreatment" autocomplete="off">
+        <div class="search-treatment__bar">
+          <div class="search-treatment__field">
+            <label class="search-treatment__label">From</label>
+            <input type="text" id="searchFromTreatment" value="London (LHR)" />
+          </div>
+          <div class="search-treatment__field" style="flex:1.4;">
+            <label class="search-treatment__label">To</label>
+            <input type="text" id="searchToTreatment" placeholder="Where to?" />
+          </div>
+          <div class="search-treatment__field">
+            <label class="search-treatment__label">Depart</label>
+            <input type="date" id="searchDepartTreatment" />
+          </div>
+          <div class="search-treatment__field">
+            <label class="search-treatment__label">Return</label>
+            <input type="date" id="searchReturnTreatment" />
+          </div>
+          <div class="search-treatment__field">
+            <label class="search-treatment__label">Cabin</label>
+            <select id="searchCabinTreatment">
+              <option value="Economy">Economy</option>
+              <option value="Premium Economy">Premium Economy</option>
+              <option value="Business">Business</option>
+              <option value="First">First</option>
+            </select>
+          </div>
+          <button type="submit" class="search-treatment__cta">
+            Search flights <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </form>
+      <div class="search-treatment__quick">
+        <span>Popular:</span>
+        <button class="exp-dest-chip" data-dest="New York (JFK)" type="button">New York</button>
+        <button class="exp-dest-chip" data-dest="Dubai (DXB)" type="button">Dubai</button>
+        <button class="exp-dest-chip" data-dest="Sydney (SYD)" type="button">Sydney</button>
+        <button class="exp-dest-chip" data-dest="Paris (CDG)" type="button">Paris</button>
+        <button class="exp-dest-chip" data-dest="Singapore (SIN)" type="button">Singapore</button>
+      </div>
+    </div>
+
   </section>
 
   <!-- Main content -->
@@ -175,6 +222,7 @@
   </footer>
 
   <script src="assets/js/nav.js"></script>
+  <script src="assets/js/experiment.js"></script>
   <script>
     // Set default dates
     (function () {
@@ -305,5 +353,93 @@
     }, { threshold: 0.3 });
     observer.observe(document.getElementById('promoBanner'));
   </script>
+
+  <!-- ── Feature Experiment overlay ──────────────────────────── -->
+
+  <!-- Trigger tab (top-left) -->
+  <button id="exp-trigger" class="exp-trigger" title="View feature experiment">
+    <i class="fa-solid fa-flask"></i>
+  </button>
+
+  <!-- Backdrop -->
+  <div id="exp-backdrop" class="exp-backdrop" style="display:none;"></div>
+
+  <!-- Slide-out panel -->
+  <aside id="exp-panel" class="exp-panel" aria-label="Feature experiment panel">
+
+    <div class="exp-panel__header">
+      <div>
+        <div class="exp-panel__title">
+          <i class="fa-solid fa-flask"></i> Feature Experiment
+        </div>
+        <code class="exp-panel__flag-key">new-search-experience</code>
+      </div>
+      <button id="exp-close" class="exp-panel__close" aria-label="Close panel">&#x2715;</button>
+    </div>
+
+    <div class="exp-panel__body">
+
+      <!-- Live variant status -->
+      <div class="exp-panel__variant-row">
+        <span class="exp-panel__variant-label">Variant assigned</span>
+        <span id="exp-badge" class="exp-badge exp-badge--control">CONTROL</span>
+        <span id="exp-status" class="exp-status">Fetching&hellip;</span>
+      </div>
+
+      <!-- What's changing -->
+      <div class="exp-panel__section">
+        <div class="exp-panel__section-title">What&rsquo;s changing</div>
+        <p class="exp-panel__desc">
+          When this flag is set to <strong>treatment</strong> in Amplitude, users see a redesigned search experience — a glassmorphism card with a single-row layout and quick-select destination chips. The <strong>control</strong> keeps the original multi-row form. Both variants fire identical Amplitude analytics events.
+        </p>
+      </div>
+
+      <!-- Code -->
+      <div class="exp-panel__section">
+        <div class="exp-panel__section-title">Implementation</div>
+        <pre class="exp-code-block"><span class="exp-c-comment">// 1. Get user identity from Analytics SDK</span>
+<span class="exp-c-kw">const</span> deviceId = amplitude.getDeviceId();
+
+<span class="exp-c-comment">// 2. Fetch variant from Amplitude Experiment</span>
+<span class="exp-c-kw">const</span> res = <span class="exp-c-kw">await</span> fetch(
+  <span class="exp-c-str">'https://api.lab.eu.amplitude.com/v1/vardata'</span>
+  + <span class="exp-c-str">'?device_id='</span> + deviceId,
+  { headers: { <span class="exp-c-str">'Authorization'</span>: <span class="exp-c-str">'Api-Key client-...'</span> } }
+);
+<span class="exp-c-kw">const</span> flags = <span class="exp-c-kw">await</span> res.json();
+
+<span class="exp-c-comment">// 3. Evaluate the flag</span>
+<span class="exp-c-kw">const</span> variant =
+  flags[<span class="exp-c-str">'new-search-experience'</span>]?.key || <span class="exp-c-str">'control'</span>;
+
+<span class="exp-c-comment">// 4. Apply the right UI</span>
+<span class="exp-c-kw">if</span> (variant === <span class="exp-c-str">'treatment'</span>) showNewSearchUI();</pre>
+      </div>
+
+      <!-- Amplitude response -->
+      <div class="exp-panel__section">
+        <div class="exp-panel__section-title">Amplitude response</div>
+        <p class="exp-panel__desc exp-panel__desc--sm">
+          Payload returned by Amplitude&rsquo;s remote evaluation endpoint on page load.
+        </p>
+        <pre id="exp-json" class="exp-json-block">{ "status": "fetching…" }</pre>
+      </div>
+
+      <!-- Preview override -->
+      <div class="exp-panel__section">
+        <div class="exp-panel__section-title">Preview variant</div>
+        <p class="exp-panel__desc exp-panel__desc--sm">
+          Force a variant locally for this demo — does not affect Amplitude assignment.
+        </p>
+        <div class="exp-preview-btns">
+          <button class="exp-preview-btn active" data-variant="auto"      type="button">Auto</button>
+          <button class="exp-preview-btn"         data-variant="control"   type="button">Control</button>
+          <button class="exp-preview-btn"         data-variant="treatment" type="button">Treatment</button>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
 </body>
 </html>
