@@ -3,7 +3,6 @@
 
   var DEPLOYMENT_KEY = 'client-z2QEZRg7NRb5iM6KIOj33PruBRR2aiNU';
   var FLAG_KEY       = 'new-search-experience';
-  var API_URL        = 'https://api.lab.eu.amplitude.com/v1/vardata';
 
   var state = {
     variant: 'control',
@@ -46,10 +45,7 @@
     if (jsonBlock) {
       var payload = {};
       if (state.error && !state.loaded) {
-        payload = {
-          _error: state.error,
-          hint: 'Update DEPLOYMENT_KEY in experiment.js'
-        };
+        payload = { _error: state.error };
       } else if (state.rawResponse) {
         payload[FLAG_KEY] = state.rawResponse[FLAG_KEY] || {
           key: 'control',
@@ -85,51 +81,39 @@
     });
   }
 
-  // ── Fetch variant from Amplitude Experiment REST API ─────────
+  // ── Initialise Amplitude Experiment SDK ──────────────────────
   function initExperiment() {
-    if (DEPLOYMENT_KEY === 'client-REPLACE_WITH_YOUR_DEPLOYMENT_KEY') {
-      state.error = 'Deployment key not configured';
+    if (!window.Experiment) {
+      state.error = 'Experiment SDK not loaded';
       applyVariant('control');
       updateOverlay();
       return;
     }
 
-    // Pick up user identity from the Analytics SDK
-    var deviceId = (window.amplitude && window.amplitude.getDeviceId)
-      ? window.amplitude.getDeviceId() : null;
+    var experiment = window.Experiment.initializeWithAmplitudeAnalytics(
+      DEPLOYMENT_KEY,
+      { serverZone: 'EU' }
+    );
 
-    var userId = null;
-    try {
-      var stored = localStorage.getItem('ba_demo_user');
-      if (stored) userId = JSON.parse(stored).userId;
-    } catch (e) {}
+    experiment.fetch()
+      .then(function () {
+        // experiment.variant() automatically fires the $exposure event
+        var v         = experiment.variant(FLAG_KEY);
+        state.variant = (v && v.value) ? v.value : 'control';
 
-    var params = new URLSearchParams();
-    if (deviceId) params.set('device_id', deviceId);
-    if (userId)   params.set('user_id', userId);
+        // Capture the full assignments for display in the overlay
+        state.rawResponse = experiment.all();
+        state.loaded      = true;
 
-    fetch(API_URL + '?' + params.toString(), {
-      headers: { 'Authorization': 'Api-Key ' + DEPLOYMENT_KEY }
-    })
-    .then(function (res) {
-      if (!res.ok) throw new Error('HTTP ' + res.status + ' — check your deployment key');
-      return res.json();
-    })
-    .then(function (data) {
-      state.rawResponse = data;
-      state.loaded      = true;
-      var flag          = data[FLAG_KEY];
-      state.variant     = (flag && flag.key) ? flag.key : 'control';
-
-      if (!state.previewOverride) applyVariant(state.variant);
-      updateOverlay();
-    })
-    .catch(function (err) {
-      console.warn('[BA Experiment] fetch error:', err.message);
-      state.error = err.message;
-      if (!state.previewOverride) applyVariant('control');
-      updateOverlay();
-    });
+        if (!state.previewOverride) applyVariant(state.variant);
+        updateOverlay();
+      })
+      .catch(function (err) {
+        console.warn('[BA Experiment] fetch error:', err.message);
+        state.error = err.message;
+        if (!state.previewOverride) applyVariant('control');
+        updateOverlay();
+      });
   }
 
   // ── Panel open / close ───────────────────────────────────────
@@ -211,7 +195,7 @@
       });
     });
 
-    // Show loading state then fetch
+    // Show loading state then initialise
     updateOverlay();
     initExperiment();
   });

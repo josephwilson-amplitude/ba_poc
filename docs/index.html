@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src="https://cdn.amplitude.com/libs/analytics-browser-2.11.1-min.js.gz"></script>
   <script src="https://cdn.amplitude.com/libs/plugin-session-replay-browser-1.6.22-min.js.gz"></script>
+  <script src="https://unpkg.com/@amplitude/experiment-js-client@1.21.1/dist/experiment.umd.js"></script>
   <script src="assets/js/amplitude.js"></script>
 </head>
 <body>
@@ -397,23 +398,23 @@
       <!-- Code -->
       <div class="exp-panel__section">
         <div class="exp-panel__section-title">Implementation</div>
-        <pre class="exp-code-block"><span class="exp-c-comment">// 1. Get user identity from Analytics SDK</span>
-<span class="exp-c-kw">const</span> deviceId = amplitude.getDeviceId();
+        <pre class="exp-code-block"><span class="exp-c-comment">// 1. Initialise — links to Analytics user identity</span>
+<span class="exp-c-kw">const</span> experiment =
+  Experiment.initializeWithAmplitudeAnalytics(
+    <span class="exp-c-str">'client-...'</span>
+  );
 
-<span class="exp-c-comment">// 2. Fetch variant from Amplitude Experiment</span>
-<span class="exp-c-kw">const</span> res = <span class="exp-c-kw">await</span> fetch(
-  <span class="exp-c-str">'https://api.lab.eu.amplitude.com/v1/vardata'</span>
-  + <span class="exp-c-str">'?device_id='</span> + deviceId,
-  { headers: { <span class="exp-c-str">'Authorization'</span>: <span class="exp-c-str">'Api-Key client-...'</span> } }
-);
-<span class="exp-c-kw">const</span> flags = <span class="exp-c-kw">await</span> res.json();
+<span class="exp-c-comment">// 2. Fetch remote variant assignment</span>
+<span class="exp-c-kw">await</span> experiment.fetch();
 
-<span class="exp-c-comment">// 3. Evaluate the flag</span>
+<span class="exp-c-comment">// 3. Evaluate the flag (auto-fires $exposure)</span>
 <span class="exp-c-kw">const</span> variant =
-  flags[<span class="exp-c-str">'new-search-experience'</span>]?.key || <span class="exp-c-str">'control'</span>;
+  experiment.variant(<span class="exp-c-str">'new-search-experience'</span>);
 
 <span class="exp-c-comment">// 4. Apply the right UI</span>
-<span class="exp-c-kw">if</span> (variant === <span class="exp-c-str">'treatment'</span>) showNewSearchUI();</pre>
+<span class="exp-c-kw">if</span> (variant.value === <span class="exp-c-str">'treatment'</span>) {
+  showNewSearchUI();
+}</pre>
       </div>
 
       <!-- Amplitude response -->
