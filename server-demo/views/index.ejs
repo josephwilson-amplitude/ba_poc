@@ -479,9 +479,9 @@ res.render(<span class="exp-c-str">'index'</span>, { variant });</pre>
 
       <!-- Cached flag config — the bucketing rules the server holds locally -->
       <div class="exp-panel__section">
-        <div class="exp-panel__section-title">Cached flag config</div>
+        <div class="exp-panel__section-title">Flag config — cached on server, polled every 30s</div>
         <p class="exp-panel__desc exp-panel__desc--sm">
-          Downloaded from Amplitude once at server startup. Every request is bucketed against these rules in-process &mdash; no outbound call needed.
+          Pulled from Amplitude at startup and refreshed every 30 seconds. Every inbound request is bucketed against these locally-held rules &mdash; Amplitude is never contacted per request.
         </p>
         <pre class="exp-json-block"><%= JSON.stringify(serverData.flagConfig, null, 2) %></pre>
       </div>
