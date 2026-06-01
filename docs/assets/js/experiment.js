@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var DEPLOYMENT_KEY = 'client-REPLACE_WITH_YOUR_DEPLOYMENT_KEY';
+  var DEPLOYMENT_KEY = 'client-z2QEZRg7NRb5iM6KIOj33PruBRR2aiNU';
   var FLAG_KEY       = 'new-search-experience';
   var API_URL        = 'https://api.lab.eu.amplitude.com/v1/vardata';
 
