@@ -24,34 +24,6 @@
 
   <div id="nav-root"></div>
 
-  <!-- Server-side mode banner -->
-  <div class="ss-mode-bar">
-    <span class="ss-mode-bar__label">
-      <i class="fa-solid fa-server"></i>
-      Server-side demo
-    </span>
-    <span class="ss-mode-bar__mode ss-mode-bar__mode--<%= serverData.mode %>">
-      <%= serverData.mode === 'local' ? 'Local evaluation' : 'Remote evaluation' %>
-    </span>
-    <span class="ss-mode-bar__time">
-      <% if (serverData.evalTimeUs !== null) { %>
-        <%= serverData.mode === 'local'
-              ? serverData.evalTimeUs + ' μs'
-              : serverData.evalTimeMs + ' ms' %> &middot;
-        <%= serverData.networkCalls %> network call<%= serverData.networkCalls === 1 ? '' : 's' %>
-      <% } %>
-    </span>
-    <span class="ss-mode-bar__sep"></span>
-    <a href="/?mode=local<%= serverData.previewOverride ? '&variant=' + serverData.previewOverride : '' %>"
-       class="ss-mode-bar__btn<%= serverData.mode === 'local' ? ' active' : '' %>">
-      <i class="fa-solid fa-microchip"></i> Local
-    </a>
-    <a href="/?mode=remote<%= serverData.previewOverride ? '&variant=' + serverData.previewOverride : '' %>"
-       class="ss-mode-bar__btn<%= serverData.mode === 'remote' ? ' active' : '' %>">
-      <i class="fa-solid fa-cloud"></i> Remote
-    </a>
-  </div>
-
   <!-- Hero -->
   <section class="hero">
     <div class="hero__content">
