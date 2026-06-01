@@ -32,8 +32,58 @@
       <p class="hero__subtitle">Discover the world with British Airways. Award-winning service, hundreds of destinations.</p>
     </div>
 
-    <!-- Control search card -->
-    <div id="search-control" class="search-card" style="margin-top:2rem; position:relative; z-index:2;<%= serverData.variant === 'treatment' ? ' display:none;' : '' %>">
+    <% if (serverData.variant === 'treatment') { %>
+
+    <!-- Treatment variant — only rendered when flag = treatment -->
+    <div class="search-card--treatment" style="margin-top:2rem; position:relative; z-index:2;">
+      <p class="search-treatment__eyebrow"><i class="fa-solid fa-bolt"></i> New Search Experience</p>
+      <h2 class="search-treatment__heading">Where would you like to fly?</h2>
+      <form id="searchFormTreatment" autocomplete="off">
+        <div class="search-treatment__bar">
+          <div class="search-treatment__field">
+            <label class="search-treatment__label">From</label>
+            <input type="text" id="searchFromTreatment" value="London (LHR)" />
+          </div>
+          <div class="search-treatment__field" style="flex:1.4;">
+            <label class="search-treatment__label">To</label>
+            <input type="text" id="searchToTreatment" placeholder="Where to?" />
+          </div>
+          <div class="search-treatment__field">
+            <label class="search-treatment__label">Depart</label>
+            <input type="date" id="searchDepartTreatment" />
+          </div>
+          <div class="search-treatment__field">
+            <label class="search-treatment__label">Return</label>
+            <input type="date" id="searchReturnTreatment" />
+          </div>
+          <div class="search-treatment__field">
+            <label class="search-treatment__label">Cabin</label>
+            <select id="searchCabinTreatment">
+              <option value="Economy">Economy</option>
+              <option value="Premium Economy">Premium Economy</option>
+              <option value="Business">Business</option>
+              <option value="First">First</option>
+            </select>
+          </div>
+          <button type="submit" class="search-treatment__cta">
+            Search flights <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </form>
+      <div class="search-treatment__quick">
+        <span>Popular:</span>
+        <button class="exp-dest-chip" data-dest="New York (JFK)" type="button">New York</button>
+        <button class="exp-dest-chip" data-dest="Dubai (DXB)" type="button">Dubai</button>
+        <button class="exp-dest-chip" data-dest="Sydney (SYD)" type="button">Sydney</button>
+        <button class="exp-dest-chip" data-dest="Paris (CDG)" type="button">Paris</button>
+        <button class="exp-dest-chip" data-dest="Singapore (SIN)" type="button">Singapore</button>
+      </div>
+    </div>
+
+    <% } else { %>
+
+    <!-- Control variant — only rendered when flag = control -->
+    <div class="search-card" style="margin-top:2rem; position:relative; z-index:2;">
       <div class="search-tabs">
         <button class="search-tab active" type="button">Return</button>
         <button class="search-tab" type="button">One way</button>
@@ -87,51 +137,7 @@
       </form>
     </div>
 
-    <!-- Treatment search card — server-baked visibility -->
-    <div id="search-treatment" class="search-card--treatment" style="margin-top:2rem; position:relative; z-index:2;<%= serverData.variant !== 'treatment' ? ' display:none;' : '' %>">
-      <p class="search-treatment__eyebrow"><i class="fa-solid fa-bolt"></i> New Search Experience</p>
-      <h2 class="search-treatment__heading">Where would you like to fly?</h2>
-      <form id="searchFormTreatment" autocomplete="off">
-        <div class="search-treatment__bar">
-          <div class="search-treatment__field">
-            <label class="search-treatment__label">From</label>
-            <input type="text" id="searchFromTreatment" value="London (LHR)" />
-          </div>
-          <div class="search-treatment__field" style="flex:1.4;">
-            <label class="search-treatment__label">To</label>
-            <input type="text" id="searchToTreatment" placeholder="Where to?" />
-          </div>
-          <div class="search-treatment__field">
-            <label class="search-treatment__label">Depart</label>
-            <input type="date" id="searchDepartTreatment" />
-          </div>
-          <div class="search-treatment__field">
-            <label class="search-treatment__label">Return</label>
-            <input type="date" id="searchReturnTreatment" />
-          </div>
-          <div class="search-treatment__field">
-            <label class="search-treatment__label">Cabin</label>
-            <select id="searchCabinTreatment">
-              <option value="Economy">Economy</option>
-              <option value="Premium Economy">Premium Economy</option>
-              <option value="Business">Business</option>
-              <option value="First">First</option>
-            </select>
-          </div>
-          <button type="submit" class="search-treatment__cta">
-            Search flights <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </div>
-      </form>
-      <div class="search-treatment__quick">
-        <span>Popular:</span>
-        <button class="exp-dest-chip" data-dest="New York (JFK)" type="button">New York</button>
-        <button class="exp-dest-chip" data-dest="Dubai (DXB)" type="button">Dubai</button>
-        <button class="exp-dest-chip" data-dest="Sydney (SYD)" type="button">Sydney</button>
-        <button class="exp-dest-chip" data-dest="Paris (CDG)" type="button">Paris</button>
-        <button class="exp-dest-chip" data-dest="Singapore (SIN)" type="button">Singapore</button>
-      </div>
-    </div>
+    <% } %>
 
   </section>
 
@@ -245,71 +251,83 @@
       if (rElT) rElT.value = fmt(ret);
     })();
 
-    // Passenger stepper
-    document.getElementById('passDec').addEventListener('click', function () {
-      var inp = document.getElementById('searchPassengers');
-      if (parseInt(inp.value) > 1) inp.value = parseInt(inp.value) - 1;
-    });
-    document.getElementById('passInc').addEventListener('click', function () {
-      var inp = document.getElementById('searchPassengers');
-      if (parseInt(inp.value) < 9) inp.value = parseInt(inp.value) + 1;
-    });
-
-    // Destination autocomplete
-    var DESTINATIONS = [
-      { label: 'New York (JFK)' }, { label: 'Dubai (DXB)' }, { label: 'Sydney (SYD)' },
-      { label: 'Paris (CDG)' }, { label: 'Los Angeles (LAX)' }, { label: 'Chicago (ORD)' },
-      { label: 'Tokyo (HND)' }, { label: 'Singapore (SIN)' }, { label: 'Cape Town (CPT)' }, { label: 'Miami (MIA)' }
-    ];
-    var searchTo = document.getElementById('searchTo');
-    var dropdown = document.getElementById('autocomplete-dropdown');
-    searchTo.addEventListener('input', function () {
-      var val = this.value;
-      if (val.length < 2) { dropdown.style.display = 'none'; return; }
-      var matches = DESTINATIONS.filter(function (d) { return d.label.toLowerCase().includes(val.toLowerCase()); });
-      if (!matches.length) { dropdown.style.display = 'none'; return; }
-      dropdown.innerHTML = matches.map(function (d) {
-        return '<div style="padding:0.6rem 0.9rem; cursor:pointer; font-size:0.875rem; border-bottom:1px solid #E8EBF0;" data-value="' + d.label + '">' + d.label + '</div>';
-      }).join('');
-      dropdown.style.display = 'block';
-    });
-    dropdown.addEventListener('click', function (e) {
-      var item = e.target.closest('[data-value]');
-      if (item) { searchTo.value = item.dataset.value; dropdown.style.display = 'none'; }
-    });
-    document.addEventListener('click', function (e) {
-      if (!searchTo.contains(e.target) && !dropdown.contains(e.target)) dropdown.style.display = 'none';
-    });
-
-    // Dest card quick-fill
-    document.querySelectorAll('.dest-card').forEach(function (card) {
-      card.addEventListener('click', function () {
-        var dest = this.dataset.dest; var code = this.dataset.code;
-        searchTo.value = dest + ' (' + code + ')';
-        document.getElementById('searchForm').scrollIntoView({ behavior: 'smooth' });
+    // Control-only JS — passenger stepper + autocomplete
+    var passDec = document.getElementById('passDec');
+    if (passDec) {
+      passDec.addEventListener('click', function () {
+        var inp = document.getElementById('searchPassengers');
+        if (parseInt(inp.value) > 1) inp.value = parseInt(inp.value) - 1;
       });
-    });
-
-    // Search submit — control form
-    document.getElementById('searchForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      var destination = searchTo.value;
-      var cabin = document.getElementById('searchCabin').value;
-      var passengers = parseInt(document.getElementById('searchPassengers').value) || 1;
-      if (!destination) return;
-      window.amplitude.track('Flight Search Completed', {
-        destination_query: destination,
-        flights_returned: Math.floor(Math.random() * 15) + 5,
-        is_returning_customer: !!localStorage.getItem('ba_demo_user'),
-        cabin_class: cabin,
-        search_ui_variant: 'control'
+      document.getElementById('passInc').addEventListener('click', function () {
+        var inp = document.getElementById('searchPassengers');
+        if (parseInt(inp.value) < 9) inp.value = parseInt(inp.value) + 1;
       });
-      window.BA.setBooking({ destination: destination, cabin: cabin, passengers: passengers });
-    });
 
-    // Search submit — treatment form
+      var DESTINATIONS = [
+        { label: 'New York (JFK)' }, { label: 'Dubai (DXB)' }, { label: 'Sydney (SYD)' },
+        { label: 'Paris (CDG)' }, { label: 'Los Angeles (LAX)' }, { label: 'Chicago (ORD)' },
+        { label: 'Tokyo (HND)' }, { label: 'Singapore (SIN)' }, { label: 'Cape Town (CPT)' }, { label: 'Miami (MIA)' }
+      ];
+      var searchTo = document.getElementById('searchTo');
+      var dropdown = document.getElementById('autocomplete-dropdown');
+      searchTo.addEventListener('input', function () {
+        var val = this.value;
+        if (val.length < 2) { dropdown.style.display = 'none'; return; }
+        var matches = DESTINATIONS.filter(function (d) { return d.label.toLowerCase().includes(val.toLowerCase()); });
+        if (!matches.length) { dropdown.style.display = 'none'; return; }
+        dropdown.innerHTML = matches.map(function (d) {
+          return '<div style="padding:0.6rem 0.9rem; cursor:pointer; font-size:0.875rem; border-bottom:1px solid #E8EBF0;" data-value="' + d.label + '">' + d.label + '</div>';
+        }).join('');
+        dropdown.style.display = 'block';
+      });
+      dropdown.addEventListener('click', function (e) {
+        var item = e.target.closest('[data-value]');
+        if (item) { searchTo.value = item.dataset.value; dropdown.style.display = 'none'; }
+      });
+      document.addEventListener('click', function (e) {
+        if (!searchTo.contains(e.target) && !dropdown.contains(e.target)) dropdown.style.display = 'none';
+      });
+    }
+
+    // Search form — whichever variant is rendered
+    var controlForm   = document.getElementById('searchForm');
     var treatmentForm = document.getElementById('searchFormTreatment');
+
+    if (controlForm) {
+      // Dest card quick-fill (control only)
+      document.querySelectorAll('.dest-card').forEach(function (card) {
+        card.addEventListener('click', function () {
+          var dest = this.dataset.dest; var code = this.dataset.code;
+          document.getElementById('searchTo').value = dest + ' (' + code + ')';
+          controlForm.scrollIntoView({ behavior: 'smooth' });
+        });
+      });
+
+      controlForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var destination = document.getElementById('searchTo').value;
+        var cabin = document.getElementById('searchCabin').value;
+        var passengers = parseInt(document.getElementById('searchPassengers').value) || 1;
+        if (!destination) return;
+        window.amplitude.track('Flight Search Completed', {
+          destination_query: destination,
+          flights_returned: Math.floor(Math.random() * 15) + 5,
+          is_returning_customer: !!localStorage.getItem('ba_demo_user'),
+          cabin_class: cabin,
+          search_ui_variant: 'control'
+        });
+        window.BA.setBooking({ destination: destination, cabin: cabin, passengers: passengers });
+      });
+    }
+
     if (treatmentForm) {
+      // Dest chips (treatment only)
+      document.querySelectorAll('.exp-dest-chip').forEach(function (chip) {
+        chip.addEventListener('click', function () {
+          document.getElementById('searchToTreatment').value = chip.dataset.dest;
+        });
+      });
+
       treatmentForm.addEventListener('submit', function (e) {
         e.preventDefault();
         var destination = (document.getElementById('searchToTreatment').value || '').trim();
@@ -325,14 +343,6 @@
         window.BA.setBooking({ destination: destination, cabin: cabin, passengers: 1 });
       });
     }
-
-    // Dest chips
-    document.querySelectorAll('.exp-dest-chip').forEach(function (chip) {
-      chip.addEventListener('click', function () {
-        var destInput = document.getElementById('searchToTreatment');
-        if (destInput) destInput.value = chip.dataset.dest;
-      });
-    });
 
     // Search tab toggle
     document.querySelectorAll('.search-tab').forEach(function (tab) {
