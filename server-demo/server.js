@@ -12,7 +12,7 @@ const FLAG_KEY     = 'new-search-experience';
 // Server-side deployment key — get this from Amplitude:
 // Experiment → Deployments → create a "server" deployment → copy secret key
 // Starts with "server-..."  NOT the client key used in the browser
-const SERVER_KEY = process.env.AMPLITUDE_SERVER_KEY || 'PASTE_YOUR_SERVER_KEY_HERE';
+const SERVER_KEY = process.env.AMPLITUDE_SERVER_KEY || 'server-7b4xYsMq6sr1lpojitsRzlnilNFpcJiQ';
 
 const ANALYTICS_KEY = 'f70ef2dbfa2b6bfc6316397d090f6b16'; // same as browser
 
