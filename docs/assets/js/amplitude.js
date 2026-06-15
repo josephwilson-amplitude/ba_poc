@@ -1,10 +1,13 @@
 (function () {
-  // Add Session Replay plugin before init
+  // Add plugins before init
   if (window.sessionReplay) {
     window.amplitude.add(window.sessionReplay.plugin({ sampleRate: 1 }));
   }
+  if (window.engagement) {
+    window.amplitude.add(window.engagement.plugin());
+  }
 
-  // Init — EU data centre (serverZone routes all endpoints to EU)
+  // Init — EU data centre
   window.amplitude.init("f70ef2dbfa2b6bfc6316397d090f6b16", {
     fetchRemoteConfig: true,
     autocapture: true,
